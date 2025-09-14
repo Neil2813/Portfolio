@@ -1,678 +1,979 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Neil Emmanuel Mathias | Creative Developer</title>
-  <link rel="shortcut icon" href="./favicon.png" type="image/svg+xml">
-  <link rel="stylesheet" href="style.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@600;700&family=Open+Sans:wght@400;500;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Neil — Cinematic Hacker Portfolio</title>
+
+  <!-- Fonts: League Spartan & Khand + JetBrains Mono -->
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&family=Khand:wght@400;700&family=League+Spartan:wght@600;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      /* Theme: dark-magic with crimson glow */
+      --bg: #000000;
+      --panel-bg: rgba(6,6,6,0.86);
+      --glass: rgba(255,255,255,0.02);
+      --accent-red: crimson;
+      --soft-red: rgba(220, 20, 60, 0.08);
+      --text: #EDEDED;
+      --muted: #9b9b9b;
+      --neon-shadow: 0 0 10px rgba(220, 20, 60, 0.08), 0 0 20px rgba(220, 20, 60, 0.04);
+      --max-width: 1100px;
+    }
+
+    /* Reset & base */
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:40px;
+      overflow:hidden;
+      border: 1px solid crimson;
+      box-shadow: 0 0 10px crimson, 0 0 20px rgba(220, 20, 60, 0.3);
+    }
+
+    /* Subtle animated crimson radiation waves in the background */
+    .radiation {
+      position:fixed; inset:0; z-index:0; pointer-events:none; mix-blend-mode:screen;
+      background:
+        radial-gradient(1200px 600px at 10% 15%, rgba(220, 20, 60, 0.02), transparent 12%),
+        radial-gradient(800px 400px at 90% 85%, rgba(220, 20, 60, 0.01), transparent 10%);
+      animation: radiationShift 20s linear infinite;
+      opacity:0.7;
+      filter: blur(30px);
+    }
+    @keyframes radiationShift{
+      0%{transform:translateY(0) scale(1)}
+      50%{transform:translateY(-40px) scale(1.02)}
+      100%{transform:translateY(0) scale(1)}
+    }
+
+    /* Terminal container */
+    .stage {
+      position:relative;
+      z-index:2;
+      width:calc(var(--max-width));
+      max-width:95vw;
+      height:75vh;
+      min-height:520px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6), var(--neon-shadow);
+      display:flex;
+      border-radius:14px;
+      overflow:hidden;
+      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));
+      border: 1px solid crimson;
+    }
+
+    /* ID Card (left 30%) with hanging effect */
+    .id-card-container {
+      width:30%;
+      min-width:260px;
+      position:relative;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+      background: linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.6));
+    }
+    
+    .id-card-hanger {
+      position: absolute;
+      top: -15px;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, #2a2a2a, #1a1a1a);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+      z-index: 1;
+    }
+    
+    .id-card-string {
+      position: absolute;
+      top: -15px;
+      width: 2px;
+      height: 30px;
+      background: linear-gradient(to bottom, #555, #333);
+      transform-origin: top center;
+      animation: stringSway 8s ease-in-out infinite;
+    }
+    
+    @keyframes stringSway {
+      0%, 100% { transform: rotate(-2deg); }
+      50% { transform: rotate(2deg); }
+    }
+    
+    .id-card {
+      width: 100%;
+      height: 80%;
+      background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      box-shadow: 
+        0 0 20px rgba(0,0,0,0.8),
+        inset 0 0 30px rgba(0,0,0,0.6),
+        0 0 15px rgba(220, 20, 60, 0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+      animation: cardSway 8s ease-in-out infinite;
+      transform-origin: top center;
+    }
+    
+    @keyframes cardSway {
+      0%, 100% { transform: rotate(-1.5deg); }
+      50% { transform: rotate(1.5deg); }
+    }
+    
+    .id-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(220, 20, 60, 0.05) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    
+    .id-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at 20% 30%, rgba(220, 20, 60, 0.1) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    
+    .id-photo {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      margin: 0 auto 15px;
+      border: 2px solid rgba(255,255,255,0.1);
+      box-shadow: 0 0 15px rgba(220, 20, 60, 0.2);
+      background: url('Profile.webp') center/cover;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .id-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+    }
+    
+    .id-content h1 {
+      font-family: "League Spartan", sans-serif;
+      font-weight: 800;
+      font-size: 24px;
+      letter-spacing: 1px;
+      margin: 0 0 5px 0;
+      text-transform: uppercase;
+      color: var(--text);
+      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    }
+    
+    .id-content .subtitle {
+      font-family: "Khand", sans-serif;
+      font-size: 14px;
+      color: var(--muted);
+      letter-spacing: 1px;
+    }
+    
+    .id-number {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 10px;
+      color: var(--muted);
+      opacity: 0.7;
+    }
+
+    /* Terminal area (right 70%) */
+    .terminal {
+      width:70%;
+      padding:28px 32px;
+      background: linear-gradient(180deg, rgba(4,4,4,0.6), rgba(6,6,6,0.8));
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      position:relative;
+      border-left: 1px solid rgba(220, 20, 60, 0.2);
+    }
+
+    /* Top "hardware" bars (buttons) */
+    .terminal .bar {
+      height:22px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding-bottom:6px;
+    }
+    .dots {
+      display:flex; gap:8px; align-items:center;
+    }
+    .dot {
+      width:11px; height:11px; border-radius:50%;
+      background:linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+      box-shadow: inset 0 -1px 0 rgba(0,0,0,0.6);
+    }
+    .dot.red{ background: linear-gradient(180deg,#ff6b9a,crimson); box-shadow:0 0 6px rgba(220, 20, 60, 0.15);}
+    .dot.yellow{ background:linear-gradient(180deg,#ffd07a,#ffb347)}
+    .dot.green{ background:linear-gradient(180deg,#9bffb4,#5ff0a1)}
+
+    /* Terminal output area */
+    .screen {
+      flex:1;
+      overflow:auto;
+      padding:18px;
+      border-radius:8px;
+      background: linear-gradient(180deg, rgba(1,1,1,0.3), rgba(0,0,0,0.6));
+      border:1px solid rgba(255,255,255,0.02);
+      box-shadow: inset 0 0 60px rgba(0,0,0,0.6);
+      position:relative;
+      font-size:15px;
+      line-height:1.45;
+      color: #cfe8ff;
+      font-family: "JetBrains Mono", monospace;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* Terminal lines & typewriter */
+    .line {
+      white-space:pre-wrap;
+      word-break:break-word;
+      display:block;
+      margin-bottom:8px;
+      opacity:0;
+      transform:translateY(6px);
+      animation:fadeInUp 0.32s forwards;
+    }
+    @keyframes fadeInUp{
+      to{opacity:1; transform:none}
+    }
+
+    /* Input prompt and cursor */
+    .prompt {
+      display:flex;
+      gap:8px;
+      align-items:flex-start;
+      margin-top:6px;
+      font-weight:500;
+      color:var(--text);
+    }
+    .prompt .prompt-label{
+      color:var(--muted);
+      min-width:110px;
+    }
+    .input {
+      flex:1;
+      outline:none;
+      border:none;
+      background:transparent;
+      color:var(--text);
+      font-family:inherit;
+      font-size:15px;
+      caret-color:crimson;
+    }
+
+    .cursor {
+      width:10px;
+      height:18px;
+      background:linear-gradient(180deg, crimson, #ff6b9a);
+      display:inline-block;
+      vertical-align:bottom;
+      margin-left:6px;
+      animation:blink 1s steps(2,start) infinite, jitter 3s linear infinite;
+      box-shadow:0 0 4px rgba(220, 20, 60, 0.5);
+      border-radius:2px;
+    }
+    @keyframes blink{50%{opacity:0}}
+    @keyframes jitter{0%{transform:translateX(0)}25%{transform:translateX(-1px)}50%{transform:translateX(0)}75%{transform:translateX(1px)}100%{transform:translateX(0)}}
+
+    /* Typewriter effect for printed blocks */
+    .typed {
+      display:inline-block;
+      overflow:hidden;
+      white-space:pre-wrap;
+      border-right: 0.12em solid rgba(255,255,255,0.06);
+    }
+
+    /* Glitch / flicker overlay */
+    .glitch {
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      mix-blend-mode:screen;
+      opacity:0.04;
+      background-image:
+        linear-gradient(transparent, rgba(220, 20, 60, 0.01) 30%, transparent 60%),
+        repeating-linear-gradient(180deg, rgba(255,255,255,0.01) 0 1px, transparent 1px 3px);
+      animation:glitchPulse 6s linear infinite;
+    }
+    @keyframes glitchPulse{0%{opacity:0.01}50%{opacity:0.06}100%{opacity:0.01}}
+
+    /* Terminal flicker effect when exiting */
+    .screen.flicker {
+      animation: flickerOut 0.8s steps(4, end);
+      filter:contrast(0.6) drop-shadow(0 0 10px rgba(220, 20, 60, 0.04));
+    }
+    @keyframes flickerOut{
+      0%{opacity:1}
+      30%{opacity:0.35}
+      60%{opacity:0.85}
+      100%{opacity:0}
+    }
+
+    /* Full screen flicker effect */
+    .fullscreen-flicker {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      z-index: 9998;
+      pointer-events: none;
+      opacity: 0;
+      animation: fullscreenFlicker 1.5s linear forwards;
+    }
+    @keyframes fullscreenFlicker {
+      0% { opacity: 0; }
+      20% { opacity: 0.8; background: #000; }
+      25% { opacity: 0.3; background: crimson; }
+      35% { opacity: 0.9; background: #000; }
+      40% { opacity: 0.2; background: crimson; }
+      50% { opacity: 0.7; background: #000; }
+      60% { opacity: 0.1; background: crimson; }
+      70% { opacity: 0.6; background: #000; }
+      80% { opacity: 0.05; background: crimson; }
+      90% { opacity: 0.4; background: #000; }
+      100% { opacity: 1; background: #000; }
+    }
+
+    /* 404 black full-screen */
+    .error404 {
+      position:fixed; 
+      inset:0; 
+      background:#000; 
+      z-index:9999;
+      display:flex; 
+      align-items:center; 
+      justify-content:center; 
+      color:var(--text);
+      font-family:"League Spartan", sans-serif; 
+      font-size:clamp(28px, 6vw, 48px);
+      text-align:center;
+      flex-direction:column;
+      gap:12px;
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+    .error404.visible {
+      opacity: 1;
+    }
+    .error404 small{
+      color: crimson;
+      font-size:14px;
+      text-shadow: 0 0 2px crimson, 0 0 4px crimson, 0 0 6px crimson;
+    }
+
+    /* small responsive adjustments */
+    @media (max-width:880px){
+      .stage{ height:82vh; flex-direction:column; min-height:640px}
+      .id-card-container{width:100%; height:34%; min-height:180px;}
+      .terminal{width:100%; height:66%}
+      .id-card {
+        width: 80%;
+        height: 90%;
+      }
+    }
+
+    /* command list styling */
+    .cmd-list{ color:#dbeefe; margin-top:8px; }
+    .cmd-list li{ margin:6px 0; list-style:none; padding-left:8px; position:relative;}
+    .cmd-list li::before{
+      content:'›';
+      color:crimson;
+      position:absolute; left: -14px;
+      text-shadow: 0 0 2px crimson, 0 0 4px crimson, 0 0 6px crimson;
+    }
+
+    /* clickable link style inside terminal (neon) */
+    .link {
+      color:crimson;
+      text-decoration:underline dotted;
+      cursor:pointer;
+      text-shadow: 0 0 2px crimson, 0 0 4px crimson, 0 0 6px crimson;
+    }
+
+    /* subtle "film grain" effect overlay */
+    .grain {
+      position:fixed; inset:0; pointer-events:none; z-index:10; mix-blend-mode:overlay;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400"><filter id="g"><feTurbulence baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter><rect width="100%" height="100%" filter="url(%23g)" opacity="0.02"/></svg>');
+      opacity:0.25;
+    }
+
+    /* Autocomplete suggestions */
+    .autocomplete-suggestions {
+      position: absolute;
+      background: rgba(6, 6, 6, 0.95);
+      border: 1px solid rgba(220, 20, 60, 0.2);
+      border-top: none;
+      max-height: 150px;
+      overflow-y: auto;
+      z-index: 100;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      font-size: 14px;
+      width: calc(100% - 110px);
+      margin-left: 110px;
+    }
+    
+    .autocomplete-suggestion {
+      padding: 6px 12px;
+      cursor: pointer;
+      color: var(--muted);
+    }
+    
+    .autocomplete-suggestion:hover, .autocomplete-suggestion.selected {
+      background: rgba(220, 20, 60, 0.1);
+      color: var(--text);
+    }
+
+    /* little helper for visually-hidden text for accessibility */
+    .visually-hidden{position:absolute!important;height:1px;width:1px;overflow:hidden;clip:rect(1px,1px,1px,1px);white-space:nowrap}
+  </style>
 </head>
-<body id="top">
+<body>
 
-  <!-- HEADER -->
-  <header class="header" data-header>
-    <div class="container">
-      <a href="#" class="logo">Neil Emmanuel<span>Mathias</span></a>
-      <button class="nav-toggle-btn" aria-label="Toggle Menu" data-nav-toggle-btn>
-        <ion-icon name="menu-outline" class="menu-icon"></ion-icon>
-        <ion-icon name="close-outline" class="close-icon"></ion-icon>
-      </button>
-      <nav class="navbar" data-navbar>
-        <ul class="navbar-list">
-          <li><a href="#home" class="navbar-link" data-nav-link>Home</a></li>
-          <li><a href="#about" class="navbar-link" data-nav-link>About</a></li>
-          <li><a href="#portfolio" class="navbar-link" data-nav-link>Portfolio</a></li>
-          <li><a href="#skills" class="navbar-link" data-nav-link>Skills</a></li>
-          <li><a href="#certificates" class="navbar-link" data-nav-link>Certificates</a></li>
-          <li><a href="#achievements" class="navbar-link" data-nav-link>Achievements</a></li>
-          <li><a href="#movies" class="navbar-link" data-nav-link>Movies</a></li>
-          <li><a href="#contact" class="navbar-link" data-nav-link>Contact</a></li>
-          <li><a href="Neil.pdf" class="btn btn-primary">Download CV</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
+  <div class="radiation" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
 
-  <main>
-    <article>
+  <main class="stage" role="main" aria-label="Neil's Cinematic Portfolio">
 
-      <!-- HERO -->
-      <section class="hero" id="home">
-        <div class="container">
-          <div class="hero-banner">
-            <img src="Profile.png.jpg" width="800" height="864" loading="lazy" alt="Neil Emmanuel Mathias" class="img-cover">
-          </div>
-          <div class="hero-content">
-            <h1 class="hero-title">
-              Hi, I'm <strong>Neil Emmanuel Mathias</strong>
-              <span>Creative Developer & Storyteller</span>
-            </h1>
-            <p class="hero-text">
-              Passionate developer skilled in PostgreSQL, AWS, Python, Java, React and C, with hands-on experience in impactful projects and award-winning apps. Blends technical expertise with creative storytelling.
-            </p>
-            <div class="btn-group">
-              <a href="#contact" class="btn btn-primary">Get in Touch</a>
-              <a href="#portfolio" class="btn btn-secondary">View Portfolio</a>
-            </div>
-          </div>
+    <!-- ID Card with hanging animation and profile image -->
+    <aside class="id-card-container" aria-hidden="false">
+      <div class="id-card-hanger"></div>
+      <div class="id-card-string"></div>
+      <div class="id-card">
+        <div class="id-photo"></div>
+        <div class="id-content">
+          <h1>NEIL EMMANUEL MATHIAS</h1>
+          <div class="subtitle">coder • filmmaker • storyteller</div>
         </div>
-      </section>
+        <div class="id-number">ID-0427-NM</div>
+      </div>
+    </aside>
 
-      <!-- ABOUT -->
-      <section class="section about" id="about">
-        <div class="container">
-          <figure class="about-banner">
-            <img src="About.jpg" width="800" height="652" loading="lazy" alt="Neil Emmanuel Mathias" class="img-cover">
-          </figure>
-          <div class="about-content">
-            <p class="section-subtitle">About Me</p>
-            <h2 class="section-title">Creative developer blending code, storytelling, and innovation</h2>
-            <p class="section-text">
-              I am a passionate and versatile developer with a strong foundation in PostgreSQL, MySQL, AWS, Python, C, Java, and React, backed by hands-on experience in building real-world projects and contributing to award-winning applications.
-            </p>
-            <p class="section-text">
-              My technical expertise spans both backend and frontend development, allowing me to build full-stack solutions with efficiency and creativity. Beyond code, I am a storyteller who writes original screenplays, creates comic books, and produces short films.
-            </p>
-            <ul class="about-list">
-              <li class="about-item">
-                <ion-icon name="code-slash-outline" class="about-item-icon"></ion-icon>
-                <span class="about-item-text">Full-Stack Development</span>
-              </li>
-              <li class="about-item">
-                <ion-icon name="film-outline" class="about-item-icon"></ion-icon>
-                <span class="about-item-text">Screenplay Writing</span>
-              </li>
-              <li class="about-item">
-                <ion-icon name="color-palette-outline" class="about-item-icon"></ion-icon>
-                <span class="about-item-text">Creative Design</span>
-              </li>
-              <li class="about-item">
-                <ion-icon name="cloud-outline" class="about-item-icon"></ion-icon>
-                <span class="about-item-text">Cloud Architecture</span>
-              </li>
-            </ul>
-            <a href="#contact" class="btn btn-primary">Hire Me</a>
-          </div>
+    <!-- Terminal -->
+    <section class="terminal" aria-label="Interactive terminal">
+      <div class="bar" aria-hidden="true">
+        <div class="dots" aria-hidden="true">
+          <div class="dot red"></div>
+          <div class="dot yellow"></div>
+          <div class="dot green"></div>
         </div>
-      </section>
+      </div>
 
-      <!-- PORTFOLIO -->
-      <section class="section portfolio" id="portfolio">
-        <div class="container">
-          <p class="section-subtitle">Portfolio</p>
-          <h2 class="section-title">My Creative Works</h2>
-          <p class="section-text">
-            Showcasing my recent projects that highlight my skills and creativity. Each project reflects my dedication to quality and innovation.
-          </p>
-          <div class="portfolio-grid">
-            <!-- Project 1 -->
-            <div class="portfolio-card">
-              <figure class="portfolio-banner">
-                <img src="InnerEcho.png" alt="InnerEcho App" loading="lazy">
-              </figure>
-              <div class="portfolio-content">
-                <span class="portfolio-badge">Mobile App</span>
-                <h3 class="portfolio-title">InnerEcho</h3>
-                <p class="portfolio-desc">
-                  A mental health tracking app that helps users monitor their emotional well-being with journaling and mood tracking features.
-                </p>
-                <a href="Innerecho.docx" class="portfolio-link" download>
-                  <span>View Details</span>
-                  <ion-icon name="arrow-forward"></ion-icon>
-                </a>
-              </div>
-            </div>
+      <div class="screen" id="screen" role="log" aria-live="polite" tabindex="0">
+        <!-- dynamic output appended here -->
+      </div>
 
-            <!-- Project 2 -->
-            <div class="portfolio-card">
-              <figure class="portfolio-banner">
-                <img src="House.jpg" alt="Household Services" loading="lazy">
-              </figure>
-              <div class="portfolio-content">
-                <span class="portfolio-badge">Website</span>
-                <h3 class="portfolio-title">HouseHold Services</h3>
-                <p class="portfolio-desc">
-                  An on-demand service platform connecting users with local professionals for home maintenance and cleaning services.
-                </p>
-                <a href="Household.docx" class="portfolio-link" download>
-                  <span>View Details</span>
-                  <ion-icon name="arrow-forward"></ion-icon>
-                </a>
-              </div>
-            </div>
-
-            <!-- Project 3 -->
-            <div class="portfolio-card">
-              <figure class="portfolio-banner">
-                <img src="Comic.png" alt="Surya Comic" loading="lazy">
-              </figure>
-              <div class="portfolio-content">
-                <span class="portfolio-badge">Comic</span>
-                <h3 class="portfolio-title">Surya: The Guardian of the Sun</h3>
-                <p class="portfolio-desc">
-                  An original comic book series featuring a superhero who draws power from the sun to protect humanity.
-                </p>
-                <a href="Surya.pptx" class="portfolio-link" download>
-                  <span>View Details</span>
-                  <ion-icon name="arrow-forward"></ion-icon>
-                </a>
-              </div>
-            </div>
-
-            <!-- Project 4 -->
-            <div class="portfolio-card">
-              <figure class="portfolio-banner">
-                <img src="paper.jpg" alt="Research Papaer" loading="lazy">
-              </figure>
-              <div class="portfolio-content">
-                <span class="portfolio-badge">Research Paper</span>
-                <h3 class="portfolio-title">ESP32-Based Temperature and Humidity Monitoring System</h3>
-                <p class="portfolio-desc">
-                  This project features a real-time temperature and humidity monitoring system built around the ESP32 microcontroller.
-                </p>
-                <a href="Embedded.pdf" class="portfolio-link" download>
-                  <span>View Details</span>
-                  <ion-icon name="arrow-forward"></ion-icon>
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- SKILLS -->
-      <section class="section skills" id="skills">
-        <div class="container">
-          <p class="section-subtitle">My Skills</p>
-          <h2 class="section-title">Technical Expertise</h2>
-          <p class="section-text">
-            I'm a passionate developer skilled in building dynamic applications using modern technologies with a focus on clean, efficient, and scalable solutions.
-          </p>
-          <div class="skills-content">
-            <div class="skills-list">
-              <div class="skills-item">
-                <div class="skills-item-top">
-                  <span class="skills-label">PostgreSQL</span>
-                  <span class="skills-value">85%</span>
-                </div>
-                <div class="skills-progress-box">
-                  <div class="skills-progress" style="width: 85%"></div>
-                </div>
-              </div>
-
-              <div class="skills-item">
-                <div class="skills-item-top">
-                  <span class="skills-label">Java</span>
-                  <span class="skills-value">60%</span>
-                </div>
-                <div class="skills-progress-box">
-                  <div class="skills-progress" style="width: 60%"></div>
-                </div>
-              </div>
-
-              <div class="skills-item">
-                <div class="skills-item-top">
-                  <span class="skills-label">Python</span>
-                  <span class="skills-value">55%</span>
-                </div>
-                <div class="skills-progress-box">
-                  <div class="skills-progress" style="width: 55%"></div>
-                </div>
-              </div>
-
-              <div class="skills-item">
-                <div class="skills-item-top">
-                  <span class="skills-label">Screenplay Writing</span>
-                  <span class="skills-value">80%</span>
-                </div>
-                <div class="skills-progress-box">
-                  <div class="skills-progress" style="width: 80%"></div>
-                </div>
-              </div>
-
-              <div class="skills-item">
-                <div class="skills-item-top">
-                  <span class="skills-label">MySQL</span>
-                  <span class="skills-value">75%</span>
-                </div>
-                <div class="skills-progress-box">
-                  <div class="skills-progress" style="width: 75%"></div>
-                </div>
-              </div>
-
-              <div class="skills-item">
-                <div class="skills-item-top">
-                  <span class="skills-label">C Programming</span>
-                  <span class="skills-value">60%</span>
-                </div>
-                <div class="skills-progress-box">
-                  <div class="skills-progress" style="width: 60%"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- CERTIFICATES -->
-      <section class="section certificates" id="certificates">
-        <div class="container">
-          <p class="section-subtitle">Certifications</p>
-          <h2 class="section-title">My Professional Certifications</h2>
-          <p class="section-text">
-            Validations of my expertise through recognized industry certifications and specialized training programs.
-          </p>
-          
-          <div class="certificates-grid">
-            <!-- Certificate 1 -->
-            <div class="certificate-card">
-              <figure class="certificate-banner">
-                <img src="AWS.png" alt="AWS Certified Cloud Practitioner" loading="lazy">
-              </figure>
-              <div class="certificate-content">
-                <span class="certificate-badge">Cloud Computing</span>
-                <h3 class="certificate-title">AWS Certified Cloud Practitioner</h3>
-                <p class="certificate-issuer">Amazon Web Services</p>
-                <p class="certificate-date">Issued: April 2025</p>
-                <p class="certificate-desc">
-                  Demonstrated foundational understanding of AWS Cloud concepts, services, and architecture.
-                </p>
-                <a href="https://www.credly.com/badges/890cf221-eedf-40f0-b0d8-d69972a5275e/public_url" class="certificate-link" target="_blank">
-                  <span>View Credential</span>
-                  <ion-icon name="arrow-forward"></ion-icon>
-                </a>
-              </div>
-            </div>
-
-            <!-- Certificate 2 -->
-            <div class="certificate-card">
-              <figure class="certificate-banner">
-                <img src="aws1.png" alt="AWS Academy Graduate - AWS Academy Cloud Architecting" loading="lazy">
-              </figure>
-              <div class="certificate-content">
-                <span class="certificate-badge">Cloud Architecture</span>
-                <h3 class="certificate-title">AWS Academy Graduate - AWS Academy Cloud Architecting</h3>
-                <p class="certificate-issuer">Amazon Web Services (AWS)</p>
-                <p class="certificate-date">Issued: April 2025</p>
-                <p class="certificate-desc">
-                  Completed AWS Academy Cloud Architecting course, gaining expertise in designing cloud solutions, VPCs, IAM, load balancing, scalability, and high availability on AWS.
-                </p>
-                <a href="https://www.credly.com/badges/f7ab8914-3231-49fe-a1e3-c66d3136d66d/public_url" class="certificate-link" target="_blank">
-                  <span>View Credential</span>
-                  <ion-icon name="arrow-forward"></ion-icon>
-                </a>
-              </div>
-            </div>
-
-            <!-- Certificate 3 -->
-            <div class="certificate-card">
-              <figure class="certificate-banner">
-                <img src="Oracle.png" alt="Oracle Cloud Infrastructure 2024 Certified Foundations Associate" loading="lazy">
-              </figure>
-              <div class="certificate-content">
-                <span class="certificate-badge">Cloud Computing</span>
-                <h3 class="certificate-title">Oracle Cloud Infrastructure 2024 Certified Foundations Associate</h3>
-                <p class="certificate-issuer">Oracle</p>
-                <p class="certificate-date">Issued: January 2025</p>
-                <p class="certificate-desc">
-                  Demonstrated foundational knowledge of Oracle Cloud Infrastructure (OCI) services, architecture, security, pricing, and operations.
-                </p>
-                <a href="https://catalog-education.oracle.com/ords/certview/sharebadge?id=837C49F8456F0F91219E83C878243BF3C74A735F92775E5F62E8A863F81B2094" class="certificate-link" target="_blank">
-                  <span>View Credential</span>
-                  <ion-icon name="arrow-forward"></ion-icon>
-                </a>
-              </div>
-            </div>
-
-            <!-- Certificate 4 -->
-            <div class="certificate-card">
-              <figure class="certificate-banner">
-                <img src="aws2.png" alt="AWS Essentials: A Complete Beginner's Guide" loading="lazy">
-              </figure>
-              <div class="certificate-content">
-                <span class="certificate-badge">Cloud Fundamentals</span>
-                <h3 class="certificate-title">AWS Essentials: A Complete Beginner's Guide</h3>
-                <p class="certificate-issuer">Udemy</p>
-                <p class="certificate-date">Issued: November 2022</p>
-                <p class="certificate-desc">
-                  Completed a beginner-level course covering AWS global infrastructure, core services, pricing models, and foundational cloud concepts.
-                </p>
-                <a href="udem.pdf" class="certificate-link" target="_blank">
-                  <span>View Credential (PDF)</span>
-                  <ion-icon name="arrow-forward"></ion-icon>
-                </a>
-              </div>
-            </div>
-
-            <div class="certificate-card">
-              <figure class="certificate-banner">
-                <img src="num.png" alt="Mastering Python, Pandas, Numpy for Absolute Beginners" loading="lazy">
-              </figure>
-              <div class="certificate-content">
-                <span class="certificate-badge">Data Science</span>
-                <h3 class="certificate-title">Mastering Python, Pandas, Numpy for Absolute Beginners</h3>
-                <p class="certificate-issuer">Udemy</p>
-                <p class="certificate-date">Issued: February 2025</p>
-                <p class="certificate-desc">
-                  Gained foundational skills in using Pandas, NumPy for efficient numerical computing, array operations, broadcasting, and data manipulation in Python.
-                </p>
-                <a href="Pandas.pdf" class="certificate-link" target="_blank">
-                  <span>View Credential (PDF)</span>
-                  <ion-icon name="arrow-forward"></ion-icon>
-                </a>
-              </div>
-            </div>
-
-            <div class="certificate-card">
-              <figure class="certificate-banner">
-                <img src="pan.png" alt="NumPy For Data Science – Real Time Experience" loading="lazy">
-              </figure>
-              <div class="certificate-content">
-                <span class="certificate-badge">Data Science</span>
-                <h3 class="certificate-title">NumPy For Data Science – Real Time Experience</h3>
-                <p class="certificate-issuer">Udemy</p>
-                <p class="certificate-date">Issued: February 2025</p>
-                <p class="certificate-desc">
-                  Developed real-world proficiency in NumPy for data science applications, including multidimensional array manipulation, vectorized operations, and performance optimization techniques.
-                </p>
-                <a href="Numpy.pdf" class="certificate-link" target="_blank">
-                  <span>View Credential (PDF)</span>
-                  <ion-icon name="arrow-forward"></ion-icon>
-                </a>
-              </div>
-            </div>
-
-            <div class="certificate-card">
-              <figure class="certificate-banner">
-                <img src="c1.png" alt="C Programming For Beginners – Master the C Language" loading="lazy">
-              </figure>
-              <div class="certificate-content">
-                <span class="certificate-badge">Programming</span>
-                <h3 class="certificate-title">C Programming For Beginners – Master the C Language</h3>
-                <p class="certificate-issuer">Udemy</p>
-                <p class="certificate-date">Issued: November 2023</p>
-                <p class="certificate-desc">
-                  Completed hands-on training in C programming fundamentals, including syntax, memory management, pointers, functions, and real-time problem solving.
-                </p>
-                <a href="C.pdf" class="certificate-link" target="_blank">
-                  <span>View Credential (PDF)</span>
-                  <ion-icon name="arrow-forward"></ion-icon>
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ACHIEVEMENTS -->
-      <section class="section achievements" id="achievements">
-        <div class="container">
-          <p class="section-subtitle">Milestones</p>
-          <h2 class="section-title">My Notable Achievements</h2>
-          <p class="section-text">
-            Recognition of my work through awards, competitions, and significant professional accomplishments.
-          </p>
-          
-          <div class="achievements-grid">
-            <!-- Achievement 1 -->
-            <div class="achievement-card">
-              <div class="achievement-icon">
-                <ion-icon name="trophy-outline"></ion-icon>
-              </div>
-              <div class="achievement-content">
-                <div class="achievement-date">2024</div>
-                <h3 class="achievement-title">Best Project Java Expo</h3>
-                <p class="achievement-desc">
-                  Won first place for InnerEcho mental health application at University level competition with over 60 team 240 participants.
-                </p>
-              </div>
-            </div>
-
-            <!-- Achievement 2 -->
-            <div class="achievement-card">
-              <div class="achievement-icon">
-                <ion-icon name="school-outline"></ion-icon>
-              </div>
-              <div class="achievement-content">
-                <div class="achievement-date">2023</div>
-                <h3 class="achievement-title">Best Design Autocard</h3>
-                <p class="achievement-desc">
-                  University Level Best Design Award for "Autocard" project, showcasing innovative use of technology in automotive design supporting farmers.
-                </p>
-              </div>
-            </div>
-
-        
-
-            <!-- Achievement 3 -->
-            <div class="achievement-card">
-              <div class="achievement-icon">
-                <ion-icon name="film-outline"></ion-icon>
-              </div>
-              <div class="achievement-content">
-                <div class="achievement-date">2025</div>
-                <h3 class="achievement-title">Short Film Selected for International Film Festivals</h3>
-                <p class="achievement-desc">
-                  Recognized for writing and directing “Void - The World of Helel” a supernatural exit room thriller acclaimed for its narrative depth.
-    </p>
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- MOVIES -->
-      <section class="section movies" id="movies">
-        <div class="container">
-          <p class="section-subtitle">My Films</p>
-          <h2 class="section-title">Creative Projects</h2>
-          <p class="section-text">
-            A showcase of my film projects that combine technical execution with compelling storytelling.
-          </p>
-          <div class="movies-grid">
-            <a href="https://youtu.be/zy2P6IitxnM?si=-HZTSL2I_d48dWyZ" target="_blank" class="movie-card">
-              <figure class="movie-banner">
-                <img src="Void.png" alt="Void - The World Of Helel" loading="lazy">
-              </figure>
-              <div class="movie-content">
-                <h3 class="movie-title">Void - The World Of Helel</h3>
-                <div class="movie-meta">
-                  <span class="movie-year">2025</span>
-                  <span class="movie-rating">9.3/10</span>
-                </div>
-                <p class="movie-director">Neil Emmanuel Mathias</p>
-                <p class="movie-desc">
-                  In a mysterious realm built by Helel for penance, two college students must obey cryptic rules to escape a locked room or face eternal torture.
-                </p>
-              </div>
-            </a>
-
-            <div class="movie-card">
-              <figure class="movie-banner">
-                <img src="AIKYAM .png" alt="Aikyam" loading="lazy">
-              </figure>
-              <div class="movie-content">
-                <h3 class="movie-title">Aikyam - When Silence Screamed, Blood Answered</h3>
-                <div class="movie-meta">
-                  <span class="movie-year">2026</span>
-                  <span class="movie-rating">TBR</span>
-                </div>
-                <p class="movie-director">Neil Emmanuel Mathias and SriHarsha RP</p>
-                <p class="movie-desc">
-                  A haunted young man with PTSD and amnesia is drawn back to a mysterious lake, where buried memories of his brother's murder begin to resurface.
-                </p>
-              </div>
-            </div>
-
-            <div class="movie-card">
-              <figure class="movie-banner">
-                <img src="AZRAEL .png" alt="Azrael" loading="lazy">
-              </figure>
-              <div class="movie-content">
-                <h3 class="movie-title">Azrael - Feared By Many Ordered By One</h3>
-                <div class="movie-meta">
-                  <span class="movie-year">2026</span>
-                  <span class="movie-rating">TBR</span>
-                </div>
-                <p class="movie-director">Neil Emmanuel Mathias</p>
-                <p class="movie-desc">
-                  Vihan, a soul trapped in guilt and addiction, relives his own downfall through a haunting projection named Maya. When Azrael arrives honoring a promise to Vihan's dying sister he must decide whether to guide the soul to death, or back to life.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- CONTACT -->
-      <section class="section contact" id="contact">
-        <div class="container">
-          <div class="contact-card">
-            <p class="section-subtitle">Get In Touch</p>
-            <h2 class="section-title">Let's Work Together</h2>
-            <p class="section-text">
-              Have a project in mind or want to discuss potential opportunities? Feel free to reach out!
-            </p>
-            <div class="contact-content">
-              <form action="https://formspree.io/f/your-form-id" method="POST" class="contact-form">
-                <div class="input-field">
-                  <input type="text" name="name" placeholder="Your Name" required class="contact-input">
-                </div>
-                <div class="input-field">
-                  <input type="email" name="email" placeholder="Email Address" required class="contact-input">
-                </div>
-                <div class="input-field">
-                  <textarea name="message" placeholder="Your Message" required class="contact-input"></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">Send Message</button>
-              </form>
-              <ul class="contact-list">
-                <li class="contact-item">
-                  <div class="contact-item-icon">
-                    <ion-icon name="location-outline"></ion-icon>
-                  </div>
-                  <div>
-                    <h3 class="contact-item-title">Location</h3>
-                    <address class="contact-item-link">
-                      Chennai/Mangalore, India
-                    </address>
-                  </div>
-                </li>
-                <li class="contact-item">
-                  <div class="contact-item-icon">
-                    <ion-icon name="mail-outline"></ion-icon>
-                  </div>
-                  <div>
-                    <h3 class="contact-item-title">Email</h3>
-                    <a href="mailto:mathiasneilemmanuel@gmail.com" class="contact-item-link">mathiasneilemmanuel@gmail.com</a>
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-    </article>
+      <div class="glitch" aria-hidden="true"></div>
+    </section>
   </main>
 
-  <!-- FOOTER -->
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-brand">
-        <a href="#" class="footer-logo">Neil Emmanuel<span>Mathias</span></a>
-        <p class="footer-text">
-          Creative developer blending technical expertise with artistic vision to craft meaningful digital experiences.
-        </p>
-        <ul class="social-list">
-          <li>
-            <a href="https://github.com/Neil2813" class="social-link" target="_blank" rel="noopener noreferrer">
-              <ion-icon name="logo-github"></ion-icon>
-            </a>
-          </li>
-          <li>
-            <a href="https://www.linkedin.com/in/neil-emmanuel-mathias-5a143b26a/" class="social-link" target="_blank" rel="noopener noreferrer">
-              <ion-icon name="logo-linkedin"></ion-icon>
-            </a>
-          </li>
-          <li>
-            <a href="https://x.com/neil75688278" class="social-link" target="_blank" rel="noopener noreferrer">
-              <ion-icon name="logo-twitter"></ion-icon>
-            </a>
-          </li>
-          <li>
-            <a href="https://www.instagram.com/_.n_.e_.i_.l_/" class="social-link" target="_blank" rel="noopener noreferrer">
-              <ion-icon name="logo-instagram"></ion-icon>
-            </a>
-          </li>
-        </ul>
-      </div>
-      <div class="footer-list">
-        <h3 class="footer-list-title">Quick Links</h3>
-        <ul>
-          <li>
-            <a href="#home" class="footer-link">Home</a>
-          </li>
-          <li>
-            <a href="#about" class="footer-link">About</a>
-          </li>
-          <li>
-            <a href="#portfolio" class="footer-link">Portfolio</a>
-          </li>
-          <li>
-            <a href="#skills" class="footer-link">Skills</a>
-          </li>
-        </ul>
-      </div>
-      <div class="footer-list">
-        <h3 class="footer-list-title">Projects</h3>
-        <ul>
-          <li>
-            <a href="#" class="footer-link">InnerEcho</a>
-          </li>
-          <li>
-            <a href="#" class="footer-link">Household Services</a>
-          </li>
-          <li>
-            <a href="#" class="footer-link">Surya Comic</a>
-          </li>
-          <li>
-            <a href="#" class="footer-link">Void Film</a>
-          </li>
-        </ul>
-      </div>
-      <div class="footer-list">
-        <h3 class="footer-list-title">Contact Info</h3>
-        <address class="footer-link">
-          <ion-icon name="location-outline"></ion-icon>
-          <span>Chennai/Mangalore, India</span>
-        </address>
-        <a href="mailto:mathiasneilemmanuel@gmail.com" class="footer-link">
-          <ion-icon name="mail-outline"></ion-icon>
-          <span>mathiasneilemmanuel@gmail.com</span>
-        </a>
-      </div>
-    </div>
-    <p class="footer-copyright">
-      &copy; <span id="current-year"></span> Neil Emmanuel Mathias. All Rights Reserved.
-    </p>
-  </footer>
+  <!-- Error full-black screen (hidden until needed) -->
+  <div id="error404" class="error404">
+    <div>ERROR 404 <span style="color:crimson; text-shadow: 0 0 2px crimson, 0 0 4px crimson, 0 0 6px crimson;">
+  Session Terminated
+</span>
+</div>
+    <small><span style="color:crimson; text-shadow: 0 0 2px crimson, 0 0 4px crimson, 0 0 6px crimson;">
+  Connection lost, Goodbye.
+</span>
+</small>
+  </div>
 
-  <!-- BACK TO TOP -->
-  <a href="#top" class="back-top-btn" aria-label="Back to top" data-back-top-btn>
-    <ion-icon name="arrow-up-outline"></ion-icon>
-  </a>
-
-  <!-- SCRIPTS -->
-  <script src="script.js"></script>
-  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
   <script>
-    document.getElementById('current-year').textContent = new Date().getFullYear();
+    /******************************************************************
+     * Neil's Cinematic Terminal — Single-file JS
+     ******************************************************************/
+    (function(){
+      const screen = document.getElementById('screen');
+      const error404 = document.getElementById('error404');
+      
+      // Track current prompt to ensure only one exists
+      let currentPrompt = null;
+      let currentInput = null;
+      let currentCursor = null;
+
+      // Available commands for autocomplete
+      const availableCommands = [
+        'about_neil', 'technical_skills', 'nontechnical_skills', 
+        'projects', 'movies', 'contact_neil', 'download_resume'
+      ];
+
+      // Utility: append a line to the terminal with optional typing animation
+      function appendLine(text = '', {type=false, delay=0, className='line'} = {}){
+        return new Promise(resolve => {
+          const line = document.createElement('div');
+          line.className = className;
+          line.style.opacity = 0;
+          if (type && text.length>0) {
+            const span = document.createElement('span');
+            span.className = 'typed';
+            line.appendChild(span);
+            screen.appendChild(line);
+            screen.scrollTop = screen.scrollHeight;
+            requestAnimationFrame(()=>{ line.style.opacity=1; line.style.transform='none'; });
+
+            let i = 0;
+            const speed = 18 + Math.random()*20;
+            const jitter = (Math.random()<0.12);
+            function tick(){
+              if (i <= text.length){
+                span.textContent = text.slice(0, i);
+                i++;
+                screen.scrollTop = screen.scrollHeight;
+                setTimeout(tick, speed + (jitter ? Math.random()*30 : 0));
+              } else {
+                resolve(line);
+              }
+            }
+            setTimeout(tick, delay);
+          } else {
+            line.textContent = text;
+            screen.appendChild(line);
+            requestAnimationFrame(()=>{ line.style.opacity=1; line.style.transform='none'; });
+            screen.scrollTop = screen.scrollHeight;
+            setTimeout(()=>resolve(line), Math.max(120, delay));
+          }
+        });
+      }
+
+      // Prompt input creation
+      function createPrompt(label = 'Enter command:'){
+        // Remove any existing prompts
+        if (currentPrompt) {
+          currentPrompt.remove();
+        }
+        
+        const promptWrap = document.createElement('div');
+        promptWrap.className = 'prompt';
+        const lbl = document.createElement('div');
+        lbl.className = 'prompt-label';
+        lbl.textContent = label;
+        const input = document.createElement('input');
+        input.className = 'input';
+        input.setAttribute('autocomplete','off');
+        input.setAttribute('autocapitalize','off');
+        input.setAttribute('spellcheck','false');
+        input.setAttribute('aria-label', label);
+        const cursor = document.createElement('span');
+        cursor.className = 'cursor';
+        promptWrap.appendChild(lbl);
+        promptWrap.appendChild(input);
+        promptWrap.appendChild(cursor);
+        screen.appendChild(promptWrap);
+        input.focus();
+        screen.scrollTop = screen.scrollHeight;
+
+        // Ensure cursor animations are active
+        cursor.style.animation = 'blink 1s steps(2,start) infinite, jitter 3s linear infinite';
+        
+        // Store references to current prompt elements
+        currentPrompt = promptWrap;
+        currentInput = input;
+        currentCursor = cursor;
+
+        // Ensure keyboard focus remains in screen
+        promptWrap.focus = () => input.focus();
+        return {promptWrap, input, cursor};
+      }
+
+      // Clear terminal (soft)
+      function clearScreen(){
+        screen.innerHTML = '';
+        currentPrompt = null;
+        currentInput = null;
+        currentCursor = null;
+      }
+
+      // Terminal behavior for initial gate
+      async function bootSequence(){
+        clearScreen();
+        await appendLine("Welcome to Neil's Portfolio", {type:true, delay:120});
+        await appendLine("Do you want to continue your visit? (y/n)  ", {type:true, delay:200});
+
+        const {promptWrap, input} = createPrompt('');
+        input.placeholder = 'y or n';
+        return new Promise(resolve => {
+          input.addEventListener('keydown', function handler(e){
+            if (e.key === 'Enter'){
+              let val = input.value.trim().toLowerCase();
+              if (!val){ return; }
+              input.disabled = true;
+              input.removeEventListener('keydown', handler);
+              resolve(val);
+            }
+          });
+        });
+      }
+
+      // Types and shows available commands
+      async function showMainMenu(){
+        clearScreen();
+        await appendLine("Access Granted. Initializing...", {type:true, delay:80});
+        await appendLine("", {delay:200});
+        await appendLine("Available Commands:", {type:true, delay:60});
+        await appendLine("", {delay:40});
+        const cmdList = [
+          "1. about_neil",
+          "2. technical_skills",
+          "3. nontechnical_skills",
+          "4. projects",
+          "5. movies",
+          "6. contact_neil",
+          "7. download_resume",
+        ];
+        for (let c of cmdList){
+          await appendLine("  " + c, {type:true, delay:30});
+        }
+        await appendLine("", {delay:40});
+        const {promptWrap, input, cursor} = createPrompt("Enter command:");
+        input.placeholder = "e.g. projects";
+        
+        // Setup autocomplete
+        setupAutocomplete(input, cursor);
+        
+        return {input, cursor};
+      }
+
+      // Setup autocomplete for input
+      function setupAutocomplete(input, cursor) {
+        let suggestions = [];
+        let selectedIndex = -1;
+        let suggestionsContainer = null;
+        
+        function hideSuggestions() {
+          if (suggestionsContainer) {
+            suggestionsContainer.remove();
+            suggestionsContainer = null;
+          }
+          selectedIndex = -1;
+          cursor.style.display = 'inline-block'; // Ensure cursor is visible
+        }
+        
+        function showSuggestions() {
+          hideSuggestions();
+          
+          const value = input.value.trim().toLowerCase();
+          if (!value) return;
+          
+          suggestions = availableCommands.filter(cmd => 
+            cmd.toLowerCase().startsWith(value)
+          );
+          
+          if (suggestions.length === 0) return;
+          
+          suggestionsContainer = document.createElement('div');
+          suggestionsContainer.className = 'autocomplete-suggestions';
+          
+          suggestions.forEach((suggestion, index) => {
+            const div = document.createElement('div');
+            div.className = 'autocomplete-suggestion';
+            div.textContent = suggestion;
+            div.addEventListener('click', () => {
+              input.value = suggestion;
+              hideSuggestions();
+              input.focus();
+              cursor.style.display = 'inline-block';
+            });
+            suggestionsContainer.appendChild(div);
+          });
+          
+          document.body.appendChild(suggestionsContainer);
+          
+          const inputRect = input.getBoundingClientRect();
+          suggestionsContainer.style.top = (inputRect.bottom + window.scrollY) + 'px';
+          suggestionsContainer.style.left = (inputRect.left + window.scrollX) + 'px';
+          suggestionsContainer.style.width = inputRect.width + 'px';
+        }
+        
+        function selectSuggestion(index) {
+          const allSuggestions = suggestionsContainer.querySelectorAll('.autocomplete-suggestion');
+          allSuggestions.forEach(s => s.classList.remove('selected'));
+          
+          if (index >= 0 && index < allSuggestions.length) {
+            allSuggestions[index].classList.add('selected');
+            selectedIndex = index;
+            input.value = suggestions[index];
+          }
+        }
+        
+        input.addEventListener('input', () => {
+          showSuggestions();
+        });
+        
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Tab' && suggestionsContainer) {
+            e.preventDefault();
+            if (suggestions.length > 0) {
+              if (selectedIndex === -1) {
+                selectedIndex = 0;
+              } else {
+                selectedIndex = (selectedIndex + 1) % suggestions.length;
+              }
+              selectSuggestion(selectedIndex);
+            }
+          } else if (e.key === 'ArrowDown' && suggestionsContainer) {
+            e.preventDefault();
+            if (suggestions.length > 0) {
+              selectedIndex = (selectedIndex + 1) % suggestions.length;
+              selectSuggestion(selectedIndex);
+            }
+          } else if (e.key === 'ArrowUp' && suggestionsContainer) {
+            e.preventDefault();
+            if (suggestions.length > 0) {
+              selectedIndex = (selectedIndex - 1 + suggestions.length) % suggestions.length;
+              selectSuggestion(selectedIndex);
+            }
+          } else if (e.key === 'Escape') {
+            hideSuggestions();
+          }
+        });
+        
+        document.addEventListener('click', (e) => {
+          if (!input.contains(e.target) && (!suggestionsContainer || !suggestionsContainer.contains(e.target))) {
+            hideSuggestions();
+          }
+        });
+      }
+
+      // Data: customize here with your real content
+      const DATA = {
+        about_neil: [
+          "Neil Emmanuel Mathias — coder, director, storyteller.",
+          "Building Cinematic Experiences and Real World Projects.",
+          "Graduated in film and graduating in Computer Science with Cloud Computing. Lives between code and cameras.",
+          "Currently exploring narrative-driven tools, screenwriting, and realtime visual systems."
+        ],
+        technical_skills: [
+          "Languages: Java, C, Python, JavaScript/TypeScript, SQL, HTML/CSS",
+          "Front-end: React, Vite, Tailwind, Framer Motion",
+          "Back-end: Node.js, MySQL, PostgreSQL, MongoDB",
+          "Tools: Git, VSCode, Figma, AWS ",
+        ],
+        nontechnical_skills: [
+          "Storytelling & Screenwriting",
+          "Directing & Cinematography",
+          "Editing: DaVinci Resolve",
+          "Project Management, Mentoring, Presentation",
+          "Languages: English, Konkani, Kannada, Hindi, Telugu, Tamil, Tulu",
+          "Cooking"
+        ],
+        projects: [
+          {title:"Crime Tracer", desc:"Crime Tracer is a citizen-focused platform developed to enhance public safety and streamline crime reporting in Chennai. The project aims to empower residents and police personnel by providing a secure, efficient, and data-driven space to file complaints, track investigations, and access resources. By integrating location mapping, legal guidance, machine learning for police allocation, and real-time notifications, the platform fosters quicker responses and better coordination. It also supports multilingual users, encourages community participation, and offers analytical insights through interactive dashboards. Designed to bridge communication gaps and improve emergency management, Chennai Crime Tracer strengthens collaboration between citizens and law enforcement while promoting transparency and trust.", link:"https://github.com/Neil2813/CrimeTracer"},
+          {title:"Nimbus — Document Intelligence", desc:"Nimbus is a frontend-first tool designed to transform dense documents into actionable insights. PDFs are converted into images, then processed with Tesseract or EasyOCR to extract text. Using Hugging Face transformer models, the content is classified, key topics identified, and finally summarized into concise highlights. Nimbus empowers users to quickly grasp essential information from complex documents, merging visual processing, NLP, and AI-driven summarization in a seamless, interactive interface.", link:"https://github.com/neilemmanuel/nimbus"},
+          {title:"Nirvana — Mental Health App", desc:"Nirvana is a mindfulness-first platform designed to guide users toward emotional balance and self-awareness. Through calming, immersive environments, users are encouraged to reflect, relax, and reconnect with themselves. Daily mood tracking, journaling, and gratitude practices are transformed into personalized insights, helping users understand their emotional patterns and cultivate positivity. An interactive companion supports users through guided reflections and mindful exercises. Nirvana brings together visualization, introspection, and gentle guidance to create a serene space for mental wellness and personal growth.", link:"https://github.com/neilemmanuel/eggboilersim"},
+          {title:"Relish", desc:"Relish is a premium destination where dining, leisure, and comfort converge in one luxurious experience. As part of a freelance project, we are creating a bespoke digital platform that mirrors the venue’s refined ambience while showcasing its restaurant, bar, and lodge offerings. The website combines a sleek, responsive design with immersive imagery, highlighting signature dishes, curated menus, seasonal specials, tourist attractions and elegant accommodations. By weaving together rich visuals, smooth navigation, and a consistent palette of charcoal and gold, this project positions Relish as a vibrant yet relaxing escape, enhancing its identity and elevating the guest experience online.", link:"https://github.com/neilemmanuel/budgetbuddy"},
+          {title:"Crimson Scriveners Weather and Alerts (CSWA)", desc:"Crimson Scriveners Weather and Alerts is a user-friendly platform that delivers accurate, real-time weather forecasts and alerts in a visually engaging way. It provides global maps, hourly updates, and astronomy details, helping users plan their day with confidence. Designed for seamless interaction, the website turns complex weather data into actionable insights, ensuring users stay informed and prepared wherever they are in the world.", link:"https://github.com/Neil_2813/CSWA"},
+          {title:"CasaCrew", desc:"Developed a multi-role service marketplace featuring dedicated dashboards for customers, professionals, and administrators, enabling efficient management of services and interactions across user groups. Implemented robust role-based access control and optimized the PostgreSQL schema with complex queries to ensure secure, high-performance operations. Designed and executed comprehensive ER diagrams to support normalized data storage and transactional integrity, providing a scalable foundation for seamless user experiences and reliable data handling.", link:"https://github.com/Neil2813/CasaCrew"},
+          {title:"SRM ACM SIGAPP", desc:"ACM-SIGAPP is a community-oriented platform created to support the activities of the ACM Special Interest Group on Applied Computing. The project aims to connect researchers, students, and professionals by providing a space to share resources, showcase applied computing work, and stay informed about events, publications, and opportunities. It’s designed to strengthen collaboration within the SIGAPP community, helping members explore emerging trends in applied computing while fostering networking and knowledge exchange.", link:"https://github.com/Neil2813/ACM-SIGAPP"}
+        ],
+        movies: [
+          {title:"Void - The World Of Helel", desc:"Helel (a.k.a. Lucifer) seeks penance for the sins he committed. So God, the Father, creates a new realm — Void. Helel’s task is to offer redemption to dying souls. If they can walk out of the door alive, they return to Earth. If not, they are cast into Hell. Two college boys, Alex and Dexter, find themselves trapped in Void. Their survival isn't just a test it’s judgment. Will they make it out? ", link:"https://www.youtube.com/watch?v=zy2P6IitxnM"},
+          {title:"Azrael - Feared By Many Ordered By One", desc:"Azrael is a haunting psychological drama set on a twilight mountain top, where Vihan and Maya’s fragile bond unravels under the weight of addiction, memory, and fate. As blurred lines between reality and hallucination twist their choices, a dark presence looms forcing them to confront truth, betrayal, and the shadows they cannot escape.", link:"https://www.youtube.com/watch?v=RFrRDsbFHXM"},
+        ],
+        contact_neil: {
+          email: {text:"mathiasneilemmanuel@gmail.com", link:"mailto:mathiasneilemmanuel@gmail.com"},
+          github: {text:"https://github.com/Neil2813", link:"https://github.com/Neil2813"},
+          linkedin: {text:"https://www.linkedin.com/in/neil-emmanuel-mathias-5a143b26a/", link:"https://www.linkedin.com/in/neil-emmanuel-mathias-5a143b26a/"},
+          instagram: {text:"https://www.instagram.com/_.n_.e_.i_.l_/", link:"https://www.instagram.com/_.n_.e_.i_.l_/"},
+          X: {text:"https://x.com/neil75688278", link:"https://x.com/neil75688278"}
+        },
+        resume_link: "Neil_Resume.pdf",
+      };
+
+      // Handlers for commands — printing with typewriter and small delays
+      async function handleCommand(cmdText){
+        const cmd = cmdText.trim().toLowerCase();
+        if (cmd === '1' || cmd === 'about_neil'){
+          for (let line of DATA.about_neil){
+            await appendLine(line, {type:true, delay:40});
+          }
+        } else if (cmd === '2' || cmd === 'technical_skills'){
+          await appendLine("Technical Skills:", {type:true});
+          for (let line of DATA.technical_skills){
+            await appendLine("  - " + line, {type:true, delay:30});
+          }
+        } else if (cmd === '3' || cmd === 'nontechnical_skills'){
+          await appendLine("Non-technical Skills:", {type:true});
+          for (let line of DATA.nontechnical_skills){
+            await appendLine("  - " + line, {type:true, delay:30});
+          }
+        } else if (cmd === '4' || cmd === 'projects'){
+          await appendLine("Projects:", {type:true});
+          for (let p of DATA.projects){
+            const node = await appendLine("", {delay:20});
+            node.innerHTML = `  • <span style="color: #dbeefe;">${p.title}</span> — ${p.desc} <a href="${p.link}" target="_blank" rel="noopener noreferrer" class="link">[link]</a>`;
+          }
+        } else if (cmd === '5' || cmd === 'movies'){
+          await appendLine("Film & Story Projects:", {type:true});
+          for (let m of DATA.movies){
+            const node = await appendLine("", {delay:20});
+            node.innerHTML = `  • <span style="color: #dbeefe;">${m.title}</span> — ${m.desc} <a href="${m.link}" target="_blank" rel="noopener noreferrer" class="link">[link]</a>`;
+          }
+        } else if (cmd === '6' || cmd === 'contact_neil'){
+          await appendLine("Contact Neil:", {type:true});
+          for (let [key, value] of Object.entries(DATA.contact_neil)){
+            const node = await appendLine("", {delay:20});
+            node.innerHTML = `  ${key.charAt(0).toUpperCase() + key.slice(1)}: ${value.text} <a href="${value.link}" target="_blank" rel="noopener noreferrer" class="link">[link]</a>`;
+          }
+          await appendLine("", {delay:120});
+          await appendLine("Tip: Click any [link] to open in a new tab.", {type:true});
+        } else if (cmd === '7' || cmd === 'download_resume') {
+          await appendLine("Downloading resume...", {type:true, delay:40});
+          await appendLine("Opening resume in new tab...", {type:true, delay:40});
+          await new Promise(resolve => setTimeout(resolve, 800));
+          window.open(DATA.resume_link, '_blank');
+          await appendLine("Resume downloaded successfully!", {type:true, delay:40});
+        } else {
+          await appendLine(`Unknown command: ${cmdText}`, {type:true});
+          await appendLine("Type one of: about_neil, technical_skills, nontechnical_skills, projects, movies, contact_neil, download_resume", {type:true});
+        }
+      }
+
+      // Show the main interactive loop
+      async function runTerminal(){
+        const menu = await showMainMenu();
+        let currentInput = menu.input;
+        let currentCursor = menu.cursor;
+
+        currentInput.addEventListener('keydown', async function handler(e){
+          if (e.key === 'Enter'){
+            const cmd = currentInput.value.trim();
+            if (!cmd) return;
+            
+            // Echo the command
+            const echo = document.createElement('div');
+            echo.className = 'line';
+            echo.textContent = `> ${cmd}`;
+            screen.appendChild(echo);
+            screen.scrollTop = screen.scrollHeight;
+            
+            // Clear input and handle command
+            currentInput.value = '';
+            await handleCommand(cmd);
+            
+            // Create a new prompt after command execution
+            const newPrompt = createPrompt("Enter command:");
+            currentInput = newPrompt.input;
+            currentCursor = newPrompt.cursor;
+            
+            // Setup autocomplete for the new input
+            setupAutocomplete(currentInput, currentCursor);
+            
+            // Add event listener to the new input
+            currentInput.addEventListener('keydown', handler);
+          }
+        });
+      }
+
+      // Create fullscreen flicker effect
+      function createFullscreenFlicker() {
+        const flicker = document.createElement('div');
+        flicker.className = 'fullscreen-flicker';
+        document.body.appendChild(flicker);
+        
+        return new Promise(resolve => {
+          setTimeout(() => {
+            flicker.remove();
+            resolve();
+          }, 1500);
+        });
+      }
+
+      // Exit flow for 'n'
+      async function exitFlow(){
+        await createFullscreenFlicker();
+        screen.classList.add('flicker');
+        await new Promise(r => setTimeout(r, 1200));
+        error404.classList.add('visible');
+      }
+
+      // Start the experience
+      (async function main(){
+        const choice = await bootSequence();
+        if (choice === 'y' || choice === 'yes'){
+          clearScreen();
+          await appendLine("Decrypting profile...", {type:true, delay:120});
+          await new Promise(r => setTimeout(r, 500));
+          runTerminal();
+        } else {
+          clearScreen();
+          await appendLine("Error 404: Session Terminated", {type:true, delay:80});
+          await new Promise(r => setTimeout(r, 700));
+          exitFlow();
+        }
+      })();
+
+      // Accessibility: allow focusing the input by clicking the screen
+      screen.addEventListener('click', (e) => {
+        // Prevent focusing when clicking on links
+        if (e.target.tagName === 'A') return;
+        
+        if (currentInput) {
+          currentInput.focus();
+          if (currentCursor) {
+            currentCursor.style.display = 'inline-block';
+          }
+        }
+      });
+
+      // Keyboard shortcut to clear (ctrl+k) and to re-open (ctrl+r)
+      document.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k'){
+          e.preventDefault();
+          clearScreen();
+          createPrompt("Enter command:");
+        }
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'r'){
+          e.preventDefault();
+          location.reload();
+        }
+      });
+
+      // Ensure cursor remains visible when input is focused
+      document.addEventListener('focusin', (e) => {
+        if (e.target.classList.contains('input') && currentCursor) {
+          currentCursor.style.display = 'inline-block';
+        }
+      });
+
+    })();
   </script>
+
+  <noscript>
+    <div style="position:fixed;left:16px;bottom:16px;background:#111;padding:10px;border-radius:8px;color:#fff">
+      JS is required for the interactive experience. Enable JavaScript in your browser.
+    </div>
+  </noscript>
+
 </body>
 </html>
