@@ -241,7 +241,8 @@
     /* Terminal output area */
     .screen {
       flex:1;
-      overflow:auto;
+      overflow-y:auto;
+      overflow-x:hidden;
       padding:18px;
       border-radius:8px;
       background: linear-gradient(180deg, rgba(1,1,1,0.3), rgba(0,0,0,0.6));
@@ -253,6 +254,27 @@
       color: #cfe8ff;
       font-family: "JetBrains Mono", monospace;
       -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(220, 20, 60, 0.3) transparent;
+    }
+    
+    .screen::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    .screen::-webkit-scrollbar-track {
+      background: rgba(0,0,0,0.2);
+      border-radius: 4px;
+    }
+    
+    .screen::-webkit-scrollbar-thumb {
+      background: rgba(220, 20, 60, 0.3);
+      border-radius: 4px;
+      border: 1px solid rgba(0,0,0,0.2);
+    }
+    
+    .screen::-webkit-scrollbar-thumb:hover {
+      background: rgba(220, 20, 60, 0.5);
     }
 
     /* Terminal lines & typewriter */
@@ -525,7 +547,7 @@
       // Available commands for autocomplete
       const availableCommands = [
         'about_neil', 'technical_skills', 'nontechnical_skills', 
-        'projects', 'movies', 'contact_neil', 'download_resume'
+        'projects', 'movies', 'contact_neil', 'download_resume', 'menu', 'clear'
       ];
 
       // Utility: append a line to the terminal with optional typing animation
@@ -622,6 +644,11 @@
 
         const {promptWrap, input} = createPrompt('');
         input.placeholder = 'y or n';
+        
+        // Update global references
+        currentInput = input;
+        currentCursor = promptWrap.querySelector('.cursor');
+        
         return new Promise(resolve => {
           input.addEventListener('keydown', function handler(e){
             if (e.key === 'Enter'){
@@ -650,13 +677,21 @@
           "5. movies",
           "6. contact_neil",
           "7. download_resume",
+          "8. menu (show this menu again)",
+          "9. clear (clear terminal)",
         ];
         for (let c of cmdList){
           await appendLine("  " + c, {type:true, delay:30});
         }
         await appendLine("", {delay:40});
+        await appendLine("Pro Tips:", {type:true, delay:40});
+        await appendLine("  • Type 'menu' anytime to see commands", {type:true, delay:30});
+        await appendLine("  • Type 'clear' to clean the terminal", {type:true, delay:30});
+        await appendLine("  • Use Tab for auto-completion", {type:true, delay:30});
+        await appendLine("  • Click terminal area to focus input", {type:true, delay:30});
+        await appendLine("", {delay:40});
         const {promptWrap, input, cursor} = createPrompt("Enter command:");
-        input.placeholder = "e.g. projects";
+        input.placeholder = "e.g. projects, menu, clear";
         
         // Setup autocomplete
         setupAutocomplete(input, cursor);
@@ -831,19 +866,19 @@
           await appendLine("Projects:", {type:true});
           for (let p of DATA.projects){
             const node = await appendLine("", {delay:20});
-            node.innerHTML = `  • <span style="color: #dbeefe;">${p.title}</span> — ${p.desc} <a href="${p.link}" target="_blank" rel="noopener noreferrer" class="link">[link]</a>`;
+            node.innerHTML = `  • <span style="color: #dbeefe;">${p.title}</span> — ${p.desc} <a href="${p.link}" target="_blank" rel="noopener noreferrer" class="link" onclick="event.stopPropagation();">[link]</a>`;
           }
         } else if (cmd === '5' || cmd === 'movies'){
           await appendLine("Film & Story Projects:", {type:true});
           for (let m of DATA.movies){
             const node = await appendLine("", {delay:20});
-            node.innerHTML = `  • <span style="color: #dbeefe;">${m.title}</span> — ${m.desc} <a href="${m.link}" target="_blank" rel="noopener noreferrer" class="link">[link]</a>`;
+            node.innerHTML = `  • <span style="color: #dbeefe;">${m.title}</span> — ${m.desc} <a href="${m.link}" target="_blank" rel="noopener noreferrer" class="link" onclick="event.stopPropagation();">[link]</a>`;
           }
         } else if (cmd === '6' || cmd === 'contact_neil'){
           await appendLine("Contact Neil:", {type:true});
           for (let [key, value] of Object.entries(DATA.contact_neil)){
             const node = await appendLine("", {delay:20});
-            node.innerHTML = `  ${key.charAt(0).toUpperCase() + key.slice(1)}: ${value.text} <a href="${value.link}" target="_blank" rel="noopener noreferrer" class="link">[link]</a>`;
+            node.innerHTML = `  ${key.charAt(0).toUpperCase() + key.slice(1)}: ${value.text} <a href="${value.link}" target="_blank" rel="noopener noreferrer" class="link" onclick="event.stopPropagation();">[link]</a>`;
           }
           await appendLine("", {delay:120});
           await appendLine("Tip: Click any [link] to open in a new tab.", {type:true});
@@ -853,27 +888,63 @@
           await new Promise(resolve => setTimeout(resolve, 800));
           window.open(DATA.resume_link, '_blank');
           await appendLine("Resume downloaded successfully!", {type:true, delay:40});
+        } else if (cmd === '8' || cmd === 'menu' || cmd === 'help') {
+          await appendLine("", {delay:40});
+          await appendLine("Available Commands:", {type:true, delay:60});
+          await appendLine("", {delay:40});
+          const cmdList = [
+            "1. about_neil",
+            "2. technical_skills",
+            "3. nontechnical_skills",
+            "4. projects",
+            "5. movies",
+            "6. contact_neil",
+            "7. download_resume",
+            "8. menu (show this menu again)",
+            "9. clear (clear terminal)",
+          ];
+          for (let c of cmdList){
+            await appendLine("  " + c, {type:true, delay:30});
+          }
+          await appendLine("", {delay:40});
+        } else if (cmd === '9' || cmd === 'clear' || cmd === 'cls') {
+          await appendLine("Clearing terminal...", {type:true, delay:40});
+          await new Promise(resolve => setTimeout(resolve, 500));
+          clearScreen();
+          await appendLine("Terminal cleared. Welcome back!", {type:true, delay:40});
+          await appendLine("", {delay:200});
+          await appendLine("Type 'menu' or 'help' to see available commands.", {type:true, delay:40});
         } else {
           await appendLine(`Unknown command: ${cmdText}`, {type:true});
-          await appendLine("Type one of: about_neil, technical_skills, nontechnical_skills, projects, movies, contact_neil, download_resume", {type:true});
+          await appendLine("Type 'menu' or 'help' to see available commands, or try:", {type:true});
+          await appendLine("about_neil, technical_skills, projects, movies, contact_neil, download_resume, clear", {type:true});
         }
       }
 
       // Show the main interactive loop
       async function runTerminal(){
         const menu = await showMainMenu();
-        let currentInput = menu.input;
-        let currentCursor = menu.cursor;
+        // Update global references
+        currentInput = menu.input;
+        currentCursor = menu.cursor;
 
-        currentInput.addEventListener('keydown', async function handler(e){
+        // Use a function to handle keydown to maintain proper scope
+        async function handleKeydown(e){
           if (e.key === 'Enter'){
             const cmd = currentInput.value.trim();
             if (!cmd) return;
+            
+            // Disable current input during command execution
+            currentInput.disabled = true;
+            if (currentCursor) {
+              currentCursor.style.display = 'none';
+            }
             
             // Echo the command
             const echo = document.createElement('div');
             echo.className = 'line';
             echo.textContent = `> ${cmd}`;
+            echo.style.color = '#9b9b9b';
             screen.appendChild(echo);
             screen.scrollTop = screen.scrollHeight;
             
@@ -881,8 +952,13 @@
             currentInput.value = '';
             await handleCommand(cmd);
             
+            // Add some spacing after command output
+            await appendLine("", {delay:40});
+            
             // Create a new prompt after command execution
             const newPrompt = createPrompt("Enter command:");
+            
+            // Update global references immediately
             currentInput = newPrompt.input;
             currentCursor = newPrompt.cursor;
             
@@ -890,9 +966,20 @@
             setupAutocomplete(currentInput, currentCursor);
             
             // Add event listener to the new input
-            currentInput.addEventListener('keydown', handler);
+            currentInput.addEventListener('keydown', handleKeydown);
+            
+            // Ensure the new input is focused and cursor is visible
+            setTimeout(() => {
+              if (currentInput && currentCursor) {
+                currentInput.focus();
+                currentCursor.style.display = 'inline-block';
+                currentCursor.style.animation = 'blink 1s steps(2,start) infinite, jitter 3s linear infinite';
+              }
+            }, 100);
           }
-        });
+        }
+
+        currentInput.addEventListener('keydown', handleKeydown);
       }
 
       // Create fullscreen flicker effect
@@ -935,14 +1022,27 @@
 
       // Accessibility: allow focusing the input by clicking the screen
       screen.addEventListener('click', (e) => {
-        // Prevent focusing when clicking on links
-        if (e.target.tagName === 'A') return;
+        // Allow clicking anywhere in the screen area, but prevent on links
+        if (e.target.tagName === 'A') {
+          return; // Let links work normally
+        }
         
-        if (currentInput) {
+        // Check if we have a valid current input
+        if (currentInput && !currentInput.disabled) {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          // Force focus and cursor visibility
           currentInput.focus();
+          
           if (currentCursor) {
             currentCursor.style.display = 'inline-block';
+            currentCursor.style.animation = 'blink 1s steps(2,start) infinite, jitter 3s linear infinite';
+            currentCursor.style.opacity = '1';
           }
+          
+          // Scroll to bottom to ensure visibility
+          screen.scrollTop = screen.scrollHeight;
         }
       });
 
@@ -951,7 +1051,11 @@
         if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k'){
           e.preventDefault();
           clearScreen();
-          createPrompt("Enter command:");
+          const newPrompt = createPrompt("Enter command:");
+          // Update global references
+          currentInput = newPrompt.input;
+          currentCursor = newPrompt.cursor;
+          setupAutocomplete(currentInput, currentCursor);
         }
         if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'r'){
           e.preventDefault();
@@ -961,8 +1065,67 @@
 
       // Ensure cursor remains visible when input is focused
       document.addEventListener('focusin', (e) => {
-        if (e.target.classList.contains('input') && currentCursor) {
-          currentCursor.style.display = 'inline-block';
+        if (e.target.classList.contains('input') && !e.target.disabled) {
+          // Update global reference if this is a new input
+          if (e.target !== currentInput) {
+            currentInput = e.target;
+            // Find the associated cursor
+            const prompt = e.target.closest('.prompt');
+            if (prompt) {
+              currentCursor = prompt.querySelector('.cursor');
+            }
+          }
+          
+          if (currentCursor) {
+            currentCursor.style.display = 'inline-block';
+            currentCursor.style.animation = 'blink 1s steps(2,start) infinite, jitter 3s linear infinite';
+            currentCursor.style.opacity = '1';
+          }
+        }
+      });
+      
+      // Handle click events on links properly
+      document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('link')) {
+          e.stopPropagation();
+          // Small visual feedback for clicked links
+          e.target.style.textShadow = '0 0 4px crimson, 0 0 8px crimson, 0 0 12px crimson';
+          setTimeout(() => {
+            e.target.style.textShadow = '0 0 2px crimson, 0 0 4px crimson, 0 0 6px crimson';
+          }, 200);
+        }
+      });
+      
+      // Prevent text selection on non-essential elements
+      document.addEventListener('selectstart', (e) => {
+        if (!e.target.classList.contains('input') && !e.target.closest('.screen')) {
+          e.preventDefault();
+        }
+      });
+      
+      // Periodic cursor visibility check
+      setInterval(() => {
+        if (currentInput && currentCursor && !currentInput.disabled) {
+          if (document.activeElement === currentInput) {
+            currentCursor.style.display = 'inline-block';
+            currentCursor.style.opacity = '1';
+          }
+        }
+      }, 1000);
+      
+      // Additional safeguard for click events anywhere in the document
+      document.addEventListener('click', (e) => {
+        // If clicking anywhere and we have a current input, try to maintain focus
+        if (currentInput && !currentInput.disabled && !e.target.classList.contains('link')) {
+          setTimeout(() => {
+            if (document.activeElement !== currentInput) {
+              currentInput.focus();
+              if (currentCursor) {
+                currentCursor.style.display = 'inline-block';
+                currentCursor.style.animation = 'blink 1s steps(2,start) infinite, jitter 3s linear infinite';
+              }
+            }
+          }, 50);
         }
       });
 
