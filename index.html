@@ -1,1142 +1,642 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Neil — Cinematic Hacker Portfolio</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio of Neil</title>
+    <style>
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'VT323', monospace;
+        }
+        
+        body {
+            background-color: #000;
+            color: #00ff00;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* Terminal Container */
+        .terminal-container {
+            width: 95%;
+            max-width: 1000px;
+            height: 90vh;
+            background-color: #000;
+            border: 2px solid #ff0033;
+            box-shadow: 0 0 15px rgba(255, 0, 51, 0.3);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        
+        /* Terminal Header */
+        .terminal-header {
+            background-color: #1a0000;
+            padding: 10px;
+            border-bottom: 1px solid #ff0033;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .terminal-title {
+            color: #ff0033;
+            font-size: 1.2rem;
+        }
+        
+        .terminal-status {
+            color: #00ff00;
+            font-size: 0.9rem;
+        }
+        
+        /* Terminal Body */
+        .terminal-body {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+        
+        /* ID Card Column */
+        .id-card-column {
+            width: 30%;
+            background-color: #0a0000;
+            border-right: 1px solid #ff0033;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        
+        .id-card {
+            background-color: #0f0000;
+            border: 1px solid #ff0033;
+            padding: 15px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(255, 0, 51, 0.2);
+            position: relative;
+            transition: transform 0.2s ease;
+        }
+        
+        .profile-image img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;  /* makes it circular */
+    object-fit: cover;   /* ensures image covers nicely */
+}
 
-  <!-- Fonts: League Spartan & Khand + JetBrains Mono -->
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&family=Khand:wght@400;700&family=League+Spartan:wght@600;800&display=swap" rel="stylesheet">
-
-  <style>
-    :root{
-      /* Theme: dark-magic with crimson glow */
-      --bg: #000000;
-      --panel-bg: rgba(6,6,6,0.86);
-      --glass: rgba(255,255,255,0.02);
-      --accent-red: crimson;
-      --soft-red: rgba(220, 20, 60, 0.08);
-      --text: #EDEDED;
-      --muted: #9b9b9b;
-      --neon-shadow: 0 0 10px rgba(220, 20, 60, 0.08), 0 0 20px rgba(220, 20, 60, 0.04);
-      --max-width: 1100px;
-    }
-
-    /* Reset & base */
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      background:var(--bg);
-      color:var(--text);
-      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:40px;
-      overflow:hidden;
-      border: 1px solid crimson;
-      box-shadow: 0 0 10px crimson, 0 0 20px rgba(220, 20, 60, 0.3);
-    }
-
-    /* Subtle animated crimson radiation waves in the background */
-    .radiation {
-      position:fixed; inset:0; z-index:0; pointer-events:none; mix-blend-mode:screen;
-      background:
-        radial-gradient(1200px 600px at 10% 15%, rgba(220, 20, 60, 0.02), transparent 12%),
-        radial-gradient(800px 400px at 90% 85%, rgba(220, 20, 60, 0.01), transparent 10%);
-      animation: radiationShift 20s linear infinite;
-      opacity:0.7;
-      filter: blur(30px);
-    }
-    @keyframes radiationShift{
-      0%{transform:translateY(0) scale(1)}
-      50%{transform:translateY(-40px) scale(1.02)}
-      100%{transform:translateY(0) scale(1)}
-    }
-
-    /* Terminal container */
-    .stage {
-      position:relative;
-      z-index:2;
-      width:calc(var(--max-width));
-      max-width:95vw;
-      height:75vh;
-      min-height:520px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.6), var(--neon-shadow);
-      display:flex;
-      border-radius:14px;
-      overflow:hidden;
-      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));
-      border: 1px solid crimson;
-    }
-
-    /* ID Card (left 30%) with hanging effect */
-    .id-card-container {
-      width:30%;
-      min-width:260px;
-      position:relative;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      padding:20px;
-      background: linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.6));
-    }
-    
-    .id-card-hanger {
-      position: absolute;
-      top: -15px;
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      background: linear-gradient(45deg, #2a2a2a, #1a1a1a);
-      box-shadow: 0 2px 4px rgba(0,0,0,0.5);
-      z-index: 1;
-    }
-    
-    .id-card-string {
-      position: absolute;
-      top: -15px;
-      width: 2px;
-      height: 30px;
-      background: linear-gradient(to bottom, #555, #333);
-      transform-origin: top center;
-      animation: stringSway 8s ease-in-out infinite;
-    }
-    
-    @keyframes stringSway {
-      0%, 100% { transform: rotate(-2deg); }
-      50% { transform: rotate(2deg); }
-    }
-    
-    .id-card {
-      width: 100%;
-      height: 80%;
-      background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 12px;
-      box-shadow: 
-        0 0 20px rgba(0,0,0,0.8),
-        inset 0 0 30px rgba(0,0,0,0.6),
-        0 0 15px rgba(220, 20, 60, 0.1);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      position: relative;
-      overflow: hidden;
-      animation: cardSway 8s ease-in-out infinite;
-      transform-origin: top center;
-    }
-    
-    @keyframes cardSway {
-      0%, 100% { transform: rotate(-1.5deg); }
-      50% { transform: rotate(1.5deg); }
-    }
-    
-    .id-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(135deg, rgba(220, 20, 60, 0.05) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    
-    .id-card::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: radial-gradient(circle at 20% 30%, rgba(220, 20, 60, 0.1) 0%, transparent 50%);
-      pointer-events: none;
-    }
-    
-    .id-photo {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      margin: 0 auto 15px;
-      border: 2px solid rgba(255,255,255,0.1);
-      box-shadow: 0 0 15px rgba(220, 20, 60, 0.2);
-      background: url('Profile.webp') center/cover;
-      position: relative;
-      z-index: 2;
-    }
-    
-    .id-content {
-      position: relative;
-      z-index: 2;
-      text-align: center;
-    }
-    
-    .id-content h1 {
-      font-family: "League Spartan", sans-serif;
-      font-weight: 800;
-      font-size: 24px;
-      letter-spacing: 1px;
-      margin: 0 0 5px 0;
-      text-transform: uppercase;
-      color: var(--text);
-      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-    }
-    
-    .id-content .subtitle {
-      font-family: "Khand", sans-serif;
-      font-size: 14px;
-      color: var(--muted);
-      letter-spacing: 1px;
-    }
-    
-    .id-number {
-      position: absolute;
-      bottom: 10px;
-      right: 10px;
-      font-family: "JetBrains Mono", monospace;
-      font-size: 10px;
-      color: var(--muted);
-      opacity: 0.7;
-    }
-
-    /* Terminal area (right 70%) */
-    .terminal {
-      width:70%;
-      padding:28px 32px;
-      background: linear-gradient(180deg, rgba(4,4,4,0.6), rgba(6,6,6,0.8));
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-      position:relative;
-      border-left: 1px solid rgba(220, 20, 60, 0.2);
-    }
-
-    /* Top "hardware" bars (buttons) */
-    .terminal .bar {
-      height:22px;
-      display:flex;
-      align-items:center;
-      gap:10px;
-      padding-bottom:6px;
-    }
-    .dots {
-      display:flex; gap:8px; align-items:center;
-    }
-    .dot {
-      width:11px; height:11px; border-radius:50%;
-      background:linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
-      box-shadow: inset 0 -1px 0 rgba(0,0,0,0.6);
-    }
-    .dot.red{ background: linear-gradient(180deg,#ff6b9a,crimson); box-shadow:0 0 6px rgba(220, 20, 60, 0.15);}
-    .dot.yellow{ background:linear-gradient(180deg,#ffd07a,#ffb347)}
-    .dot.green{ background:linear-gradient(180deg,#9bffb4,#5ff0a1)}
-
-    /* Terminal output area */
-    .screen {
-      flex:1;
-      overflow-y:auto;
-      overflow-x:hidden;
-      padding:18px;
-      border-radius:8px;
-      background: linear-gradient(180deg, rgba(1,1,1,0.3), rgba(0,0,0,0.6));
-      border:1px solid rgba(255,255,255,0.02);
-      box-shadow: inset 0 0 60px rgba(0,0,0,0.6);
-      position:relative;
-      font-size:15px;
-      line-height:1.45;
-      color: #cfe8ff;
-      font-family: "JetBrains Mono", monospace;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: thin;
-      scrollbar-color: rgba(220, 20, 60, 0.3) transparent;
-    }
-    
-    .screen::-webkit-scrollbar {
-      width: 8px;
-    }
-    
-    .screen::-webkit-scrollbar-track {
-      background: rgba(0,0,0,0.2);
-      border-radius: 4px;
-    }
-    
-    .screen::-webkit-scrollbar-thumb {
-      background: rgba(220, 20, 60, 0.3);
-      border-radius: 4px;
-      border: 1px solid rgba(0,0,0,0.2);
-    }
-    
-    .screen::-webkit-scrollbar-thumb:hover {
-      background: rgba(220, 20, 60, 0.5);
-    }
-
-    /* Terminal lines & typewriter */
-    .line {
-      white-space:pre-wrap;
-      word-break:break-word;
-      display:block;
-      margin-bottom:8px;
-      opacity:0;
-      transform:translateY(6px);
-      animation:fadeInUp 0.32s forwards;
-    }
-    @keyframes fadeInUp{
-      to{opacity:1; transform:none}
-    }
-
-    /* Input prompt and cursor */
-    .prompt {
-      display:flex;
-      gap:8px;
-      align-items:flex-start;
-      margin-top:6px;
-      font-weight:500;
-      color:var(--text);
-    }
-    .prompt .prompt-label{
-      color:var(--muted);
-      min-width:110px;
-    }
-    .input {
-      flex:1;
-      outline:none;
-      border:none;
-      background:transparent;
-      color:var(--text);
-      font-family:inherit;
-      font-size:15px;
-      caret-color:crimson;
-    }
-
-    .cursor {
-      width:10px;
-      height:18px;
-      background:linear-gradient(180deg, crimson, #ff6b9a);
-      display:inline-block;
-      vertical-align:bottom;
-      margin-left:6px;
-      animation:blink 1s steps(2,start) infinite, jitter 3s linear infinite;
-      box-shadow:0 0 4px rgba(220, 20, 60, 0.5);
-      border-radius:2px;
-    }
-    @keyframes blink{50%{opacity:0}}
-    @keyframes jitter{0%{transform:translateX(0)}25%{transform:translateX(-1px)}50%{transform:translateX(0)}75%{transform:translateX(1px)}100%{transform:translateX(0)}}
-
-    /* Typewriter effect for printed blocks */
-    .typed {
-      display:inline-block;
-      overflow:hidden;
-      white-space:pre-wrap;
-      border-right: 0.12em solid rgba(255,255,255,0.06);
-    }
-
-    /* Glitch / flicker overlay */
-    .glitch {
-      position:absolute;
-      inset:0;
-      pointer-events:none;
-      mix-blend-mode:screen;
-      opacity:0.04;
-      background-image:
-        linear-gradient(transparent, rgba(220, 20, 60, 0.01) 30%, transparent 60%),
-        repeating-linear-gradient(180deg, rgba(255,255,255,0.01) 0 1px, transparent 1px 3px);
-      animation:glitchPulse 6s linear infinite;
-    }
-    @keyframes glitchPulse{0%{opacity:0.01}50%{opacity:0.06}100%{opacity:0.01}}
-
-    /* Terminal flicker effect when exiting */
-    .screen.flicker {
-      animation: flickerOut 0.8s steps(4, end);
-      filter:contrast(0.6) drop-shadow(0 0 10px rgba(220, 20, 60, 0.04));
-    }
-    @keyframes flickerOut{
-      0%{opacity:1}
-      30%{opacity:0.35}
-      60%{opacity:0.85}
-      100%{opacity:0}
-    }
-
-    /* Full screen flicker effect */
-    .fullscreen-flicker {
-      position: fixed;
-      inset: 0;
-      background: #000;
-      z-index: 9998;
-      pointer-events: none;
-      opacity: 0;
-      animation: fullscreenFlicker 1.5s linear forwards;
-    }
-    @keyframes fullscreenFlicker {
-      0% { opacity: 0; }
-      20% { opacity: 0.8; background: #000; }
-      25% { opacity: 0.3; background: crimson; }
-      35% { opacity: 0.9; background: #000; }
-      40% { opacity: 0.2; background: crimson; }
-      50% { opacity: 0.7; background: #000; }
-      60% { opacity: 0.1; background: crimson; }
-      70% { opacity: 0.6; background: #000; }
-      80% { opacity: 0.05; background: crimson; }
-      90% { opacity: 0.4; background: #000; }
-      100% { opacity: 1; background: #000; }
-    }
-
-    /* 404 black full-screen */
-    .error404 {
-      position:fixed; 
-      inset:0; 
-      background:#000; 
-      z-index:9999;
-      display:flex; 
-      align-items:center; 
-      justify-content:center; 
-      color:var(--text);
-      font-family:"League Spartan", sans-serif; 
-      font-size:clamp(28px, 6vw, 48px);
-      text-align:center;
-      flex-direction:column;
-      gap:12px;
-      opacity: 0;
-      transition: opacity 0.8s ease;
-    }
-    .error404.visible {
-      opacity: 1;
-    }
-    .error404 small{
-      color: crimson;
-      font-size:14px;
-      text-shadow: 0 0 2px crimson, 0 0 4px crimson, 0 0 6px crimson;
-    }
-
-    /* small responsive adjustments */
-    @media (max-width:880px){
-      .stage{ height:82vh; flex-direction:column; min-height:640px}
-      .id-card-container{width:100%; height:34%; min-height:180px;}
-      .terminal{width:100%; height:66%}
-      .id-card {
-        width: 80%;
-        height: 90%;
-      }
-    }
-
-    /* command list styling */
-    .cmd-list{ color:#dbeefe; margin-top:8px; }
-    .cmd-list li{ margin:6px 0; list-style:none; padding-left:8px; position:relative;}
-    .cmd-list li::before{
-      content:'›';
-      color:crimson;
-      position:absolute; left: -14px;
-      text-shadow: 0 0 2px crimson, 0 0 4px crimson, 0 0 6px crimson;
-    }
-
-    /* clickable link style inside terminal (neon) */
-    .link {
-      color:crimson;
-      text-decoration:underline dotted;
-      cursor:pointer;
-      text-shadow: 0 0 2px crimson, 0 0 4px crimson, 0 0 6px crimson;
-    }
-
-    /* subtle "film grain" effect overlay */
-    .grain {
-      position:fixed; inset:0; pointer-events:none; z-index:10; mix-blend-mode:overlay;
-      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400"><filter id="g"><feTurbulence baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter><rect width="100%" height="100%" filter="url(%23g)" opacity="0.02"/></svg>');
-      opacity:0.25;
-    }
-
-    /* Autocomplete suggestions */
-    .autocomplete-suggestions {
-      position: absolute;
-      background: rgba(6, 6, 6, 0.95);
-      border: 1px solid rgba(220, 20, 60, 0.2);
-      border-top: none;
-      max-height: 150px;
-      overflow-y: auto;
-      z-index: 100;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-      font-size: 14px;
-      width: calc(100% - 110px);
-      margin-left: 110px;
-    }
-    
-    .autocomplete-suggestion {
-      padding: 6px 12px;
-      cursor: pointer;
-      color: var(--muted);
-    }
-    
-    .autocomplete-suggestion:hover, .autocomplete-suggestion.selected {
-      background: rgba(220, 20, 60, 0.1);
-      color: var(--text);
-    }
-
-    /* little helper for visually-hidden text for accessibility */
-    .visually-hidden{position:absolute!important;height:1px;width:1px;overflow:hidden;clip:rect(1px,1px,1px,1px);white-space:nowrap}
-  </style>
+        
+        .developer-name {
+            color: #ff0033;
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+        }
+        
+        .developer-title {
+            color: #00ff00;
+            font-size: 1rem;
+            margin-bottom: 15px;
+        }
+        
+        /* Portfolio Column */
+        .portfolio-column {
+            width: 70%;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Output Area */
+        .output-area {
+            flex: 1;
+            margin-bottom: 10px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        
+        .output-line {
+            margin-bottom: 5px;
+            line-height: 1.4;
+        }
+        
+        .command-line {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+        
+        .prompt {
+            color: #ff0033;
+            margin-right: 10px;
+        }
+        
+        .command-input {
+            background: transparent;
+            border: none;
+            color: #00ff00;
+            font-size: 1rem;
+            outline: none;
+            flex: 1;
+        }
+        
+        /* Cursor */
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 1rem;
+            background-color: #00ff00;
+            animation: blink 1s infinite;
+            margin-left: 2px;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        
+        /* Menu Styles */
+        .menu-list {
+            list-style: none;
+            margin-top: 20px;
+        }
+        
+        .menu-item {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .menu-number {
+            color: #ff0033;
+            margin-right: 10px;
+        }
+        
+        /* Content Styles */
+        .content-section {
+            margin-top: 20px;
+            padding: 15px;
+            border-left: 2px solid #ff0033;
+            background-color: rgba(255, 0, 51, 0.05);
+        }
+        
+        .section-title {
+            color: #ff0033;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+        }
+        
+        .skill-list, .project-list {
+            list-style: none;
+            margin-left: 20px;
+        }
+        
+        .skill-item, .project-item {
+            margin-bottom: 10px;
+            padding-left: 10px;
+            border-left: 1px solid rgba(255, 0, 51, 0.3);
+        }
+        
+        .project-title {
+            color: #ff9933;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .project-description {
+            margin-bottom: 5px;
+        }
+        
+        .project-links {
+            margin-top: 5px;
+        }
+        
+        .link {
+            color: #00ccff;
+            text-decoration: none;
+            margin-right: 15px;
+            cursor: pointer;
+        }
+        
+        .link:hover {
+            text-decoration: underline;
+        }
+        
+        /* Error Screen */
+        .error-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #ff0033;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        
+        .error-message {
+            color: #000;
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .error-instruction {
+            color: #000;
+            font-size: 1.2rem;
+            text-align: center;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .terminal-body {
+                flex-direction: column;
+            }
+            
+            .id-card-column, .portfolio-column {
+                width: 100%;
+            }
+            
+            .id-card-column {
+                border-right: none;
+                border-bottom: 1px solid #ff0033;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
 </head>
 <body>
-
-  <div class="radiation" aria-hidden="true"></div>
-  <div class="grain" aria-hidden="true"></div>
-
-  <main class="stage" role="main" aria-label="Neil's Cinematic Portfolio">
-
-    <!-- ID Card with hanging animation and profile image -->
-    <aside class="id-card-container" aria-hidden="false">
-      <div class="id-card-hanger"></div>
-      <div class="id-card-string"></div>
-      <div class="id-card">
-        <div class="id-photo"></div>
-        <div class="id-content">
-          <h1>NEIL EMMANUEL MATHIAS</h1>
-          <div class="subtitle">coder • filmmaker • storyteller</div>
+    <div class="terminal-container">
+        <div class="terminal-header">
+            <div class="terminal-title">DECRYPTED PROFILE TERMINAL</div>
+            <div class="terminal-status" id="status">INITIALIZING...</div>
         </div>
-        <div class="id-number">ID-0427-NM</div>
-      </div>
-    </aside>
-
-    <!-- Terminal -->
-    <section class="terminal" aria-label="Interactive terminal">
-      <div class="bar" aria-hidden="true">
-        <div class="dots" aria-hidden="true">
-          <div class="dot red"></div>
-          <div class="dot yellow"></div>
-          <div class="dot green"></div>
-        </div>
-      </div>
-
-      <div class="screen" id="screen" role="log" aria-live="polite" tabindex="0">
-        <!-- dynamic output appended here -->
-      </div>
-
-      <div class="glitch" aria-hidden="true"></div>
-    </section>
-  </main>
-
-  <!-- Error full-black screen (hidden until needed) -->
-  <div id="error404" class="error404">
-    <div>ERROR 404 <span style="color:crimson; text-shadow: 0 0 2px crimson, 0 0 4px crimson, 0 0 6px crimson;">
-  Session Terminated
-</span>
-</div>
-    <small><span style="color:crimson; text-shadow: 0 0 2px crimson, 0 0 4px crimson, 0 0 6px crimson;">
-  Connection lost, Goodbye.
-</span>
-</small>
-  </div>
-
-  <script>
-    /******************************************************************
-     * Neil's Cinematic Terminal — Single-file JS
-     ******************************************************************/
-    (function(){
-      const screen = document.getElementById('screen');
-      const error404 = document.getElementById('error404');
-      
-      // Track current prompt to ensure only one exists
-      let currentPrompt = null;
-      let currentInput = null;
-      let currentCursor = null;
-
-      // Available commands for autocomplete
-      const availableCommands = [
-        'about_neil', 'technical_skills', 'nontechnical_skills', 
-        'projects', 'movies', 'contact_neil', 'download_resume', 'menu', 'clear'
-      ];
-
-      // Utility: append a line to the terminal with optional typing animation
-      function appendLine(text = '', {type=false, delay=0, className='line'} = {}){
-        return new Promise(resolve => {
-          const line = document.createElement('div');
-          line.className = className;
-          line.style.opacity = 0;
-          if (type && text.length>0) {
-            const span = document.createElement('span');
-            span.className = 'typed';
-            line.appendChild(span);
-            screen.appendChild(line);
-            screen.scrollTop = screen.scrollHeight;
-            requestAnimationFrame(()=>{ line.style.opacity=1; line.style.transform='none'; });
-
-            let i = 0;
-            const speed = 18 + Math.random()*20;
-            const jitter = (Math.random()<0.12);
-            function tick(){
-              if (i <= text.length){
-                span.textContent = text.slice(0, i);
-                i++;
-                screen.scrollTop = screen.scrollHeight;
-                setTimeout(tick, speed + (jitter ? Math.random()*30 : 0));
-              } else {
-                resolve(line);
-              }
-            }
-            setTimeout(tick, delay);
-          } else {
-            line.textContent = text;
-            screen.appendChild(line);
-            requestAnimationFrame(()=>{ line.style.opacity=1; line.style.transform='none'; });
-            screen.scrollTop = screen.scrollHeight;
-            setTimeout(()=>resolve(line), Math.max(120, delay));
-          }
-        });
-      }
-
-      // Prompt input creation
-      function createPrompt(label = 'Enter command:'){
-        // Remove any existing prompts
-        if (currentPrompt) {
-          currentPrompt.remove();
-        }
         
-        const promptWrap = document.createElement('div');
-        promptWrap.className = 'prompt';
-        const lbl = document.createElement('div');
-        lbl.className = 'prompt-label';
-        lbl.textContent = label;
-        const input = document.createElement('input');
-        input.className = 'input';
-        input.setAttribute('autocomplete','off');
-        input.setAttribute('autocapitalize','off');
-        input.setAttribute('spellcheck','false');
-        input.setAttribute('aria-label', label);
-        const cursor = document.createElement('span');
-        cursor.className = 'cursor';
-        promptWrap.appendChild(lbl);
-        promptWrap.appendChild(input);
-        promptWrap.appendChild(cursor);
-        screen.appendChild(promptWrap);
-        input.focus();
-        screen.scrollTop = screen.scrollHeight;
-
-        // Ensure cursor animations are active
-        cursor.style.animation = 'blink 1s steps(2,start) infinite, jitter 3s linear infinite';
-        
-        // Store references to current prompt elements
-        currentPrompt = promptWrap;
-        currentInput = input;
-        currentCursor = cursor;
-
-        // Ensure keyboard focus remains in screen
-        promptWrap.focus = () => input.focus();
-        return {promptWrap, input, cursor};
-      }
-
-      // Clear terminal (soft)
-      function clearScreen(){
-        screen.innerHTML = '';
-        currentPrompt = null;
-        currentInput = null;
-        currentCursor = null;
-      }
-
-      // Terminal behavior for initial gate
-      async function bootSequence(){
-        clearScreen();
-        await appendLine("Welcome to Neil's Portfolio", {type:true, delay:120});
-        await appendLine("Do you want to continue your visit? (y/n)  ", {type:true, delay:200});
-
-        const {promptWrap, input} = createPrompt('');
-        input.placeholder = 'y or n';
-        
-        // Update global references
-        currentInput = input;
-        currentCursor = promptWrap.querySelector('.cursor');
-        
-        return new Promise(resolve => {
-          input.addEventListener('keydown', function handler(e){
-            if (e.key === 'Enter'){
-              let val = input.value.trim().toLowerCase();
-              if (!val){ return; }
-              input.disabled = true;
-              input.removeEventListener('keydown', handler);
-              resolve(val);
-            }
-          });
-        });
-      }
-
-      // Types and shows available commands
-      async function showMainMenu(){
-        clearScreen();
-        await appendLine("Access Granted. Initializing...", {type:true, delay:80});
-        await appendLine("", {delay:200});
-        await appendLine("Available Commands:", {type:true, delay:60});
-        await appendLine("", {delay:40});
-        const cmdList = [
-          "1. about_neil",
-          "2. technical_skills",
-          "3. nontechnical_skills",
-          "4. projects",
-          "5. movies",
-          "6. contact_neil",
-          "7. download_resume",
-          "8. menu (show this menu again)",
-          "9. clear (clear terminal)",
-        ];
-        for (let c of cmdList){
-          await appendLine("  " + c, {type:true, delay:30});
-        }
-        await appendLine("", {delay:40});
-        await appendLine("Pro Tips:", {type:true, delay:40});
-        await appendLine("  • Type 'menu' anytime to see commands", {type:true, delay:30});
-        await appendLine("  • Type 'clear' to clean the terminal", {type:true, delay:30});
-        await appendLine("  • Use Tab for auto-completion", {type:true, delay:30});
-        await appendLine("  • Click terminal area to focus input", {type:true, delay:30});
-        await appendLine("", {delay:40});
-        const {promptWrap, input, cursor} = createPrompt("Enter command:");
-        input.placeholder = "e.g. projects, menu, clear";
-        
-        // Setup autocomplete
-        setupAutocomplete(input, cursor);
-        
-        return {input, cursor};
-      }
-
-      // Setup autocomplete for input
-      function setupAutocomplete(input, cursor) {
-        let suggestions = [];
-        let selectedIndex = -1;
-        let suggestionsContainer = null;
-        
-        function hideSuggestions() {
-          if (suggestionsContainer) {
-            suggestionsContainer.remove();
-            suggestionsContainer = null;
-          }
-          selectedIndex = -1;
-          cursor.style.display = 'inline-block'; // Ensure cursor is visible
-        }
-        
-        function showSuggestions() {
-          hideSuggestions();
-          
-          const value = input.value.trim().toLowerCase();
-          if (!value) return;
-          
-          suggestions = availableCommands.filter(cmd => 
-            cmd.toLowerCase().startsWith(value)
-          );
-          
-          if (suggestions.length === 0) return;
-          
-          suggestionsContainer = document.createElement('div');
-          suggestionsContainer.className = 'autocomplete-suggestions';
-          
-          suggestions.forEach((suggestion, index) => {
-            const div = document.createElement('div');
-            div.className = 'autocomplete-suggestion';
-            div.textContent = suggestion;
-            div.addEventListener('click', () => {
-              input.value = suggestion;
-              hideSuggestions();
-              input.focus();
-              cursor.style.display = 'inline-block';
-            });
-            suggestionsContainer.appendChild(div);
-          });
-          
-          document.body.appendChild(suggestionsContainer);
-          
-          const inputRect = input.getBoundingClientRect();
-          suggestionsContainer.style.top = (inputRect.bottom + window.scrollY) + 'px';
-          suggestionsContainer.style.left = (inputRect.left + window.scrollX) + 'px';
-          suggestionsContainer.style.width = inputRect.width + 'px';
-        }
-        
-        function selectSuggestion(index) {
-          const allSuggestions = suggestionsContainer.querySelectorAll('.autocomplete-suggestion');
-          allSuggestions.forEach(s => s.classList.remove('selected'));
-          
-          if (index >= 0 && index < allSuggestions.length) {
-            allSuggestions[index].classList.add('selected');
-            selectedIndex = index;
-            input.value = suggestions[index];
-          }
-        }
-        
-        input.addEventListener('input', () => {
-          showSuggestions();
-        });
-        
-        input.addEventListener('keydown', (e) => {
-          if (e.key === 'Tab' && suggestionsContainer) {
-            e.preventDefault();
-            if (suggestions.length > 0) {
-              if (selectedIndex === -1) {
-                selectedIndex = 0;
-              } else {
-                selectedIndex = (selectedIndex + 1) % suggestions.length;
-              }
-              selectSuggestion(selectedIndex);
-            }
-          } else if (e.key === 'ArrowDown' && suggestionsContainer) {
-            e.preventDefault();
-            if (suggestions.length > 0) {
-              selectedIndex = (selectedIndex + 1) % suggestions.length;
-              selectSuggestion(selectedIndex);
-            }
-          } else if (e.key === 'ArrowUp' && suggestionsContainer) {
-            e.preventDefault();
-            if (suggestions.length > 0) {
-              selectedIndex = (selectedIndex - 1 + suggestions.length) % suggestions.length;
-              selectSuggestion(selectedIndex);
-            }
-          } else if (e.key === 'Escape') {
-            hideSuggestions();
-          }
-        });
-        
-        document.addEventListener('click', (e) => {
-          if (!input.contains(e.target) && (!suggestionsContainer || !suggestionsContainer.contains(e.target))) {
-            hideSuggestions();
-          }
-        });
-      }
-
-      // Data: customize here with your real content
-      const DATA = {
-        about_neil: [
-          "Neil Emmanuel Mathias — coder, director, storyteller.",
-          "Building Cinematic Experiences and Real World Projects.",
-          "Graduated in film and graduating in Computer Science with Cloud Computing. Lives between code and cameras.",
-          "Currently exploring narrative-driven tools, screenwriting, and realtime visual systems."
-        ],
-        technical_skills: [
-          "Languages: Java, C, Python, JavaScript/TypeScript, SQL, HTML/CSS",
-          "Front-end: React, Vite, Tailwind, Framer Motion",
-          "Back-end: Node.js, MySQL, PostgreSQL, MongoDB",
-          "Tools: Git, VSCode, Figma, AWS ",
-        ],
-        nontechnical_skills: [
-          "Storytelling & Screenwriting",
-          "Directing & Cinematography",
-          "Editing: DaVinci Resolve",
-          "Project Management, Mentoring, Presentation",
-          "Languages: English, Konkani, Kannada, Hindi, Telugu, Tamil, Tulu",
-          "Cooking"
-        ],
-        projects: [
-          {title:"Crime Tracer", desc:"Crime Tracer is a citizen-focused platform developed to enhance public safety and streamline crime reporting in Chennai. The project aims to empower residents and police personnel by providing a secure, efficient, and data-driven space to file complaints, track investigations, and access resources. By integrating location mapping, legal guidance, machine learning for police allocation, and real-time notifications, the platform fosters quicker responses and better coordination. It also supports multilingual users, encourages community participation, and offers analytical insights through interactive dashboards. Designed to bridge communication gaps and improve emergency management, Chennai Crime Tracer strengthens collaboration between citizens and law enforcement while promoting transparency and trust.", link:"https://github.com/Neil2813/CrimeTracer"},
-          {title:"Nimbus — Document Intelligence", desc:"Nimbus is a frontend-first tool designed to transform dense documents into actionable insights. PDFs are converted into images, then processed with Tesseract or EasyOCR to extract text. Using Hugging Face transformer models, the content is classified, key topics identified, and finally summarized into concise highlights. Nimbus empowers users to quickly grasp essential information from complex documents, merging visual processing, NLP, and AI-driven summarization in a seamless, interactive interface.", link:"https://github.com/neilemmanuel/nimbus"},
-          {title:"Nirvana — Mental Health App", desc:"Nirvana is a mindfulness-first platform designed to guide users toward emotional balance and self-awareness. Through calming, immersive environments, users are encouraged to reflect, relax, and reconnect with themselves. Daily mood tracking, journaling, and gratitude practices are transformed into personalized insights, helping users understand their emotional patterns and cultivate positivity. An interactive companion supports users through guided reflections and mindful exercises. Nirvana brings together visualization, introspection, and gentle guidance to create a serene space for mental wellness and personal growth.", link:"https://github.com/neilemmanuel/eggboilersim"},
-          {title:"Relish", desc:"Relish is a premium destination where dining, leisure, and comfort converge in one luxurious experience. As part of a freelance project, we are creating a bespoke digital platform that mirrors the venue’s refined ambience while showcasing its restaurant, bar, and lodge offerings. The website combines a sleek, responsive design with immersive imagery, highlighting signature dishes, curated menus, seasonal specials, tourist attractions and elegant accommodations. By weaving together rich visuals, smooth navigation, and a consistent palette of charcoal and gold, this project positions Relish as a vibrant yet relaxing escape, enhancing its identity and elevating the guest experience online.", link:"https://github.com/neilemmanuel/budgetbuddy"},
-          {title:"Crimson Scriveners Weather and Alerts (CSWA)", desc:"Crimson Scriveners Weather and Alerts is a user-friendly platform that delivers accurate, real-time weather forecasts and alerts in a visually engaging way. It provides global maps, hourly updates, and astronomy details, helping users plan their day with confidence. Designed for seamless interaction, the website turns complex weather data into actionable insights, ensuring users stay informed and prepared wherever they are in the world.", link:"https://github.com/Neil_2813/CSWA"},
-          {title:"CasaCrew", desc:"Developed a multi-role service marketplace featuring dedicated dashboards for customers, professionals, and administrators, enabling efficient management of services and interactions across user groups. Implemented robust role-based access control and optimized the PostgreSQL schema with complex queries to ensure secure, high-performance operations. Designed and executed comprehensive ER diagrams to support normalized data storage and transactional integrity, providing a scalable foundation for seamless user experiences and reliable data handling.", link:"https://github.com/Neil2813/CasaCrew"},
-          {title:"SRM ACM SIGAPP", desc:"ACM-SIGAPP is a community-oriented platform created to support the activities of the ACM Special Interest Group on Applied Computing. The project aims to connect researchers, students, and professionals by providing a space to share resources, showcase applied computing work, and stay informed about events, publications, and opportunities. It’s designed to strengthen collaboration within the SIGAPP community, helping members explore emerging trends in applied computing while fostering networking and knowledge exchange.", link:"https://github.com/Neil2813/ACM-SIGAPP"}
-        ],
-        movies: [
-          {title:"Void - The World Of Helel", desc:"Helel (a.k.a. Lucifer) seeks penance for the sins he committed. So God, the Father, creates a new realm — Void. Helel’s task is to offer redemption to dying souls. If they can walk out of the door alive, they return to Earth. If not, they are cast into Hell. Two college boys, Alex and Dexter, find themselves trapped in Void. Their survival isn't just a test it’s judgment. Will they make it out? ", link:"https://www.youtube.com/watch?v=zy2P6IitxnM"},
-          {title:"Azrael - Feared By Many Ordered By One", desc:"Azrael is a haunting psychological drama set on a twilight mountain top, where Vihan and Maya’s fragile bond unravels under the weight of addiction, memory, and fate. As blurred lines between reality and hallucination twist their choices, a dark presence looms forcing them to confront truth, betrayal, and the shadows they cannot escape.", link:"https://www.youtube.com/watch?v=RFrRDsbFHXM"},
-        ],
-        contact_neil: {
-          email: {text:"mathiasneilemmanuel@gmail.com", link:"mailto:mathiasneilemmanuel@gmail.com"},
-          github: {text:"https://github.com/Neil2813", link:"https://github.com/Neil2813"},
-          linkedin: {text:"https://www.linkedin.com/in/neil-emmanuel-mathias-5a143b26a/", link:"https://www.linkedin.com/in/neil-emmanuel-mathias-5a143b26a/"},
-          instagram: {text:"https://www.instagram.com/_.n_.e_.i_.l_/", link:"https://www.instagram.com/_.n_.e_.i_.l_/"},
-          X: {text:"https://x.com/neil75688278", link:"https://x.com/neil75688278"}
-        },
-        resume_link: "Neil_Resume.pdf",
-      };
-
-      // Handlers for commands — printing with typewriter and small delays
-      async function handleCommand(cmdText){
-        const cmd = cmdText.trim().toLowerCase();
-        if (cmd === '1' || cmd === 'about_neil'){
-          for (let line of DATA.about_neil){
-            await appendLine(line, {type:true, delay:40});
-          }
-        } else if (cmd === '2' || cmd === 'technical_skills'){
-          await appendLine("Technical Skills:", {type:true});
-          for (let line of DATA.technical_skills){
-            await appendLine("  - " + line, {type:true, delay:30});
-          }
-        } else if (cmd === '3' || cmd === 'nontechnical_skills'){
-          await appendLine("Non-technical Skills:", {type:true});
-          for (let line of DATA.nontechnical_skills){
-            await appendLine("  - " + line, {type:true, delay:30});
-          }
-        } else if (cmd === '4' || cmd === 'projects'){
-          await appendLine("Projects:", {type:true});
-          for (let p of DATA.projects){
-            const node = await appendLine("", {delay:20});
-            node.innerHTML = `  • <span style="color: #dbeefe;">${p.title}</span> — ${p.desc} <a href="${p.link}" target="_blank" rel="noopener noreferrer" class="link" onclick="event.stopPropagation();">[link]</a>`;
-          }
-        } else if (cmd === '5' || cmd === 'movies'){
-          await appendLine("Film & Story Projects:", {type:true});
-          for (let m of DATA.movies){
-            const node = await appendLine("", {delay:20});
-            node.innerHTML = `  • <span style="color: #dbeefe;">${m.title}</span> — ${m.desc} <a href="${m.link}" target="_blank" rel="noopener noreferrer" class="link" onclick="event.stopPropagation();">[link]</a>`;
-          }
-        } else if (cmd === '6' || cmd === 'contact_neil'){
-          await appendLine("Contact Neil:", {type:true});
-          for (let [key, value] of Object.entries(DATA.contact_neil)){
-            const node = await appendLine("", {delay:20});
-            node.innerHTML = `  ${key.charAt(0).toUpperCase() + key.slice(1)}: ${value.text} <a href="${value.link}" target="_blank" rel="noopener noreferrer" class="link" onclick="event.stopPropagation();">[link]</a>`;
-          }
-          await appendLine("", {delay:120});
-          await appendLine("Tip: Click any [link] to open in a new tab.", {type:true});
-        } else if (cmd === '7' || cmd === 'download_resume') {
-          await appendLine("Downloading resume...", {type:true, delay:40});
-          await appendLine("Opening resume in new tab...", {type:true, delay:40});
-          await new Promise(resolve => setTimeout(resolve, 800));
-          window.open(DATA.resume_link, '_blank');
-          await appendLine("Resume downloaded successfully!", {type:true, delay:40});
-        } else if (cmd === '8' || cmd === 'menu' || cmd === 'help') {
-          await appendLine("", {delay:40});
-          await appendLine("Available Commands:", {type:true, delay:60});
-          await appendLine("", {delay:40});
-          const cmdList = [
-            "1. about_neil",
-            "2. technical_skills",
-            "3. nontechnical_skills",
-            "4. projects",
-            "5. movies",
-            "6. contact_neil",
-            "7. download_resume",
-            "8. menu (show this menu again)",
-            "9. clear (clear terminal)",
-          ];
-          for (let c of cmdList){
-            await appendLine("  " + c, {type:true, delay:30});
-          }
-          await appendLine("", {delay:40});
-        } else if (cmd === '9' || cmd === 'clear' || cmd === 'cls') {
-          await appendLine("Clearing terminal...", {type:true, delay:40});
-          await new Promise(resolve => setTimeout(resolve, 500));
-          clearScreen();
-          await appendLine("Terminal cleared. Welcome back!", {type:true, delay:40});
-          await appendLine("", {delay:200});
-          await appendLine("Type 'menu' or 'help' to see available commands.", {type:true, delay:40});
-        } else {
-          await appendLine(`Unknown command: ${cmdText}`, {type:true});
-          await appendLine("Type 'menu' or 'help' to see available commands, or try:", {type:true});
-          await appendLine("about_neil, technical_skills, projects, movies, contact_neil, download_resume, clear", {type:true});
-        }
-      }
-
-      // Show the main interactive loop
-      async function runTerminal(){
-        const menu = await showMainMenu();
-        // Update global references
-        currentInput = menu.input;
-        currentCursor = menu.cursor;
-
-        // Use a function to handle keydown to maintain proper scope
-        async function handleKeydown(e){
-          if (e.key === 'Enter'){
-            const cmd = currentInput.value.trim();
-            if (!cmd) return;
-            
-            // Disable current input during command execution
-            currentInput.disabled = true;
-            if (currentCursor) {
-              currentCursor.style.display = 'none';
-            }
-            
-            // Echo the command
-            const echo = document.createElement('div');
-            echo.className = 'line';
-            echo.textContent = `> ${cmd}`;
-            echo.style.color = '#9b9b9b';
-            screen.appendChild(echo);
-            screen.scrollTop = screen.scrollHeight;
-            
-            // Clear input and handle command
-            currentInput.value = '';
-            await handleCommand(cmd);
-            
-            // Add some spacing after command output
-            await appendLine("", {delay:40});
-            
-            // Create a new prompt after command execution
-            const newPrompt = createPrompt("Enter command:");
-            
-            // Update global references immediately
-            currentInput = newPrompt.input;
-            currentCursor = newPrompt.cursor;
-            
-            // Setup autocomplete for the new input
-            setupAutocomplete(currentInput, currentCursor);
-            
-            // Add event listener to the new input
-            currentInput.addEventListener('keydown', handleKeydown);
-            
-            // Ensure the new input is focused and cursor is visible
-            setTimeout(() => {
-              if (currentInput && currentCursor) {
-                currentInput.focus();
-                currentCursor.style.display = 'inline-block';
-                currentCursor.style.animation = 'blink 1s steps(2,start) infinite, jitter 3s linear infinite';
-              }
-            }, 100);
-          }
-        }
-
-        currentInput.addEventListener('keydown', handleKeydown);
-      }
-
-      // Create fullscreen flicker effect
-      function createFullscreenFlicker() {
-        const flicker = document.createElement('div');
-        flicker.className = 'fullscreen-flicker';
-        document.body.appendChild(flicker);
-        
-        return new Promise(resolve => {
-          setTimeout(() => {
-            flicker.remove();
-            resolve();
-          }, 1500);
-        });
-      }
-
-      // Exit flow for 'n'
-      async function exitFlow(){
-        await createFullscreenFlicker();
-        screen.classList.add('flicker');
-        await new Promise(r => setTimeout(r, 1200));
-        error404.classList.add('visible');
-      }
-
-      // Start the experience
-      (async function main(){
-        const choice = await bootSequence();
-        if (choice === 'y' || choice === 'yes'){
-          clearScreen();
-          await appendLine("Decrypting profile...", {type:true, delay:120});
-          await new Promise(r => setTimeout(r, 500));
-          runTerminal();
-        } else {
-          clearScreen();
-          await appendLine("Error 404: Session Terminated", {type:true, delay:80});
-          await new Promise(r => setTimeout(r, 700));
-          exitFlow();
-        }
-      })();
-
-      // Accessibility: allow focusing the input by clicking the screen
-      screen.addEventListener('click', (e) => {
-        // Allow clicking anywhere in the screen area, but prevent on links
-        if (e.target.tagName === 'A') {
-          return; // Let links work normally
-        }
-        
-        // Check if we have a valid current input
-        if (currentInput && !currentInput.disabled) {
-          e.preventDefault();
-          e.stopPropagation();
-          
-          // Force focus and cursor visibility
-          currentInput.focus();
-          
-          if (currentCursor) {
-            currentCursor.style.display = 'inline-block';
-            currentCursor.style.animation = 'blink 1s steps(2,start) infinite, jitter 3s linear infinite';
-            currentCursor.style.opacity = '1';
-          }
-          
-          // Scroll to bottom to ensure visibility
-          screen.scrollTop = screen.scrollHeight;
-        }
-      });
-
-      // Keyboard shortcut to clear (ctrl+k) and to re-open (ctrl+r)
-      document.addEventListener('keydown', (e) => {
-        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k'){
-          e.preventDefault();
-          clearScreen();
-          const newPrompt = createPrompt("Enter command:");
-          // Update global references
-          currentInput = newPrompt.input;
-          currentCursor = newPrompt.cursor;
-          setupAutocomplete(currentInput, currentCursor);
-        }
-        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'r'){
-          e.preventDefault();
-          location.reload();
-        }
-      });
-
-      // Ensure cursor remains visible when input is focused
-      document.addEventListener('focusin', (e) => {
-        if (e.target.classList.contains('input') && !e.target.disabled) {
-          // Update global reference if this is a new input
-          if (e.target !== currentInput) {
-            currentInput = e.target;
-            // Find the associated cursor
-            const prompt = e.target.closest('.prompt');
-            if (prompt) {
-              currentCursor = prompt.querySelector('.cursor');
-            }
-          }
-          
-          if (currentCursor) {
-            currentCursor.style.display = 'inline-block';
-            currentCursor.style.animation = 'blink 1s steps(2,start) infinite, jitter 3s linear infinite';
-            currentCursor.style.opacity = '1';
-          }
-        }
-      });
-      
-      // Handle click events on links properly
-      document.addEventListener('click', (e) => {
-        if (e.target.classList.contains('link')) {
-          e.stopPropagation();
-          // Small visual feedback for clicked links
-          e.target.style.textShadow = '0 0 4px crimson, 0 0 8px crimson, 0 0 12px crimson';
-          setTimeout(() => {
-            e.target.style.textShadow = '0 0 2px crimson, 0 0 4px crimson, 0 0 6px crimson';
-          }, 200);
-        }
-      });
-      
-      // Prevent text selection on non-essential elements
-      document.addEventListener('selectstart', (e) => {
-        if (!e.target.classList.contains('input') && !e.target.closest('.screen')) {
-          e.preventDefault();
-        }
-      });
-      
-      // Periodic cursor visibility check
-      setInterval(() => {
-        if (currentInput && currentCursor && !currentInput.disabled) {
-          if (document.activeElement === currentInput) {
-            currentCursor.style.display = 'inline-block';
-            currentCursor.style.opacity = '1';
-          }
-        }
-      }, 1000);
-      
-      // Additional safeguard for click events anywhere in the document
-      document.addEventListener('click', (e) => {
-        // If clicking anywhere and we have a current input, try to maintain focus
-        if (currentInput && !currentInput.disabled && !e.target.classList.contains('link')) {
-          setTimeout(() => {
-            if (document.activeElement !== currentInput) {
-              currentInput.focus();
-              if (currentCursor) {
-                currentCursor.style.display = 'inline-block';
-                currentCursor.style.animation = 'blink 1s steps(2,start) infinite, jitter 3s linear infinite';
-              }
-            }
-          }, 50);
-        }
-      });
-
-    })();
-  </script>
-
-  <noscript>
-    <div style="position:fixed;left:16px;bottom:16px;background:#111;padding:10px;border-radius:8px;color:#fff">
-      JS is required for the interactive experience. Enable JavaScript in your browser.
+        <div class="terminal-body" id="terminalBody">
+            <!-- ID Card Column -->
+            <div class="id-card-column">
+    <div class="id-card" id="idCard">
+        <div class="profile-image">
+            <img src="Profile.webp" alt="Profile Picture" />
+        </div>  
+        <h2 class="developer-name">Neil Emmanuel Mathias</h2>
+        <p class="developer-title">FULL STACK DEVELOPER/DIRECTOR</p>
+        <p>ACCESS LEVEL: CLEARED</p>
+        <p>STATUS: ONLINE</p>
     </div>
-  </noscript>
+</div>
 
+            
+            <!-- Portfolio Column -->
+            <div class="portfolio-column">
+                <div class="output-area" id="outputArea">
+                    <!-- Initial output will be populated by JavaScript -->
+                </div>
+                
+                <div class="command-line">
+                    <span class="prompt">>></span>
+                    <input type="text" class="command-input" id="commandInput" autocomplete="off" autofocus>
+                    <span class="cursor"></span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Error Screen -->
+        <div class="error-screen" id="errorScreen">
+            <div class="error-message">ERROR 404: ACCESS TERMINATED</div>
+            <div class="error-instruction">MSG: REFRESH AGAIN FOR PORTFOLIO</div>
+        </div>
+    </div>
+
+    <script>
+        // Application State
+        let state = {
+            authenticated: false,
+            currentSection: null,
+            menuVisible: false
+        };
+
+        // DOM Elements
+        const terminalBody = document.getElementById('terminalBody');
+        const outputArea = document.getElementById('outputArea');
+        const commandInput = document.getElementById('commandInput');
+        const errorScreen = document.getElementById('errorScreen');
+        const idCard = document.getElementById('idCard');
+        const status = document.getElementById('status');
+
+        // Content Data
+        const contentData = {
+            about: {
+                title: "ABOUT ME",
+                content: `
+                    <p>Neil Emmanuel Mathias — coder, director, storyteller.</p>
+                    <p>Building Cinematic Experiences and Real World Projects.</p>
+                    <p>Graduated in film and graduating in Computer Science with Cloud Computing. Lives between code and cameras.</p>
+                    <p>Currently exploring narrative-driven tools, screenwriting, and realtime visual systems.</p>
+                    <p><a href="Neil_Resume.pdf" class="link" onclick="window.open('resume.pdf', '_blank')">[DOWNLOAD FULL RESUME]</a></p>
+                `
+            },
+            technical: {
+                title: "TECHNICAL SKILLS",
+                content: `
+                    <ul class="skill-list">
+                        <li class="skill-item">Java<a href="https://docs.oracle.com/en/java/" class="link" target="_blank">[DOCS]</a></li>
+                        <li class="skill-item">React <a href="https://reactjs.org/" class="link" target="_blank">[DOCS]</a></li>
+                        <li class="skill-item">Python <a href="https://www.python.org/" class="link" target="_blank">[DOCS]</a></li>
+                        <li class="skill-item">SQL Databases</li>
+                        <li class="skill-item">AWS Cloud Services</li>
+                        <li class="skill-item">Figma</li>
+                    </ul>
+                `
+            },
+            nonTechnical: {
+                title: "NON-TECHNICAL SKILLS",
+                content: `
+                    <ul class="skill-list">
+                        <li class="skill-item">Storytelling & Screenwriting</li>
+                        <li class="skill-item">Directing & Cinematography</li>
+                        <li class="skill-item">Public Speaking & Presentation</li>
+                        <li class="skill-item">Team Leadership & Mentoring</li>
+                        <li class="skill-item">Editing: DaVinci Resolve</li>
+                        <li class="skill-item">Languages: English, Konkani, Kannada, Hindi, Telugu, Tamil, Tulu"</li>
+                        <li class="skill-item">Cooking</li>
+                    </ul>
+                `
+            },
+            techProjects: {
+                title: "TECHNICAL PROJECTS",
+                content: `
+                    <ul class="project-list">
+                        <li class="project-item">
+                            <div class="project-title">Crime Tracer</div>
+                            <div class="project-description">Crime Tracer is a citizen-focused platform developed to enhance public safety and streamline crime reporting in Chennai. The project aims to empower residents and police personnel by providing a secure, efficient, and data-driven space to file complaints, track investigations, and access resources. By integrating location mapping, legal guidance, machine learning for police allocation, and real-time notifications, the platform fosters quicker responses and better coordination. It also supports multilingual users, encourages community participation, and offers analytical insights through interactive dashboards. Designed to bridge communication gaps and improve emergency management, Chennai Crime Tracer strengthens collaboration between citizens and law enforcement while promoting transparency and trust</div>
+                            <div class="project-links">
+                                <!-- <a href="#" class="link" target="_blank">[GITHUB]</a> -->
+                                
+                            </div>
+                        </li>
+                        <li class="project-item">
+                            <div class="project-title">Nimbus — Document Intelligence</div>
+                            <div class="project-description">Nimbus is a frontend-first tool designed to transform dense documents into actionable insights. PDFs are converted into images, then processed with Tesseract or EasyOCR to extract text. Using Hugging Face transformer models, the content is classified, key topics identified, and finally summarized into concise highlights. Nimbus empowers users to quickly grasp essential information from complex documents, merging visual processing, NLP, and AI-driven summarization in a seamless, interactive interface.</div>
+                            <div class="project-links">
+                                <!-- <a href="#" class="link" target="_blank">[GITHUB]</a> -->
+                            </div>
+                        </li>
+                        <li class="project-item">
+                            <div class="project-title">Nirvana — Mental Health App</div>
+                            <div class="project-description">Machine learning system that analyzes code for security vulnerabilities and best practices.</div>
+                            <div class="project-links">Nirvana is a mindfulness-first platform designed to guide users toward emotional balance and self-awareness. Through calming, immersive environments, users are encouraged to reflect, relax, and reconnect with themselves. Daily mood tracking, journaling, and gratitude practices are transformed into personalized insights, helping users understand their emotional patterns and cultivate positivity. An interactive companion supports users through guided reflections and mindful exercises. Nirvana brings together visualization, introspection, and gentle guidance to create a serene space for mental wellness and personal growth.
+                                <a href="https://github.com/Neil2813/InnerEcho" class="link" target="_blank">[GITHUB]</a>
+                                
+                            </div>
+                        </li>
+                           <li class="project-item">
+                            <div class="project-title">Relish</div>
+                            <div class="project-description">Relish is a premium destination where dining, leisure, and comfort converge in one luxurious experience. As part of a freelance project, we are creating a bespoke digital platform that mirrors the venue’s refined ambience while showcasing its restaurant, bar, and lodge offerings. The website combines a sleek, responsive design with immersive imagery, highlighting signature dishes, curated menus, seasonal specials, tourist attractions and elegant accommodations. By weaving together rich visuals, smooth navigation, and a consistent palette of charcoal and gold, this project positions Relish as a vibrant yet relaxing escape, enhancing its identity and elevating the guest experience online.</div>
+                            <div class="project-links">
+                                <!-- <a href="#" class="link" target="_blank">[GITHUB]</a> -->
+                            </div>
+                            </li>
+                            <li class="project-item">
+                            <div class="project-title">Crimson Scriveners Weather and Alerts (CSWA)</div>
+                            <div class="project-description">Crimson Scriveners Weather and Alerts is a user-friendly platform that delivers accurate, real-time weather forecasts and alerts in a visually engaging way. It provides global maps, hourly updates, and astronomy details, helping users plan their day with confidence. Designed for seamless interaction, the website turns complex weather data into actionable insights, ensuring users stay informed and prepared wherever they are in the world.</div>
+                            <div class="project-links">
+                                <!-- <a href="https://github.com/Neil_2813/CSWA" class="link" target="_blank">[GITHUB]</a> -->
+                            </div>
+                            </li>
+                            <li class="project-item">
+                            <div class="project-title">CasaCrew</div>
+                            <div class="project-description">Developed a multi-role service marketplace featuring dedicated dashboards for customers, professionals, and administrators, enabling efficient management of services and interactions across user groups. Implemented robust role-based access control and optimized the PostgreSQL schema with complex queries to ensure secure, high-performance operations. Designed and executed comprehensive ER diagrams to support normalized data storage and transactional integrity, providing a scalable foundation for seamless user experiences and reliable data handling.</div>
+                            <div class="project-links">
+                                <a href="https://github.com/Neil2813/CasaCrew" class="link" target="_blank">[GITHUB]</a>
+                            </div>
+                            </li>
+                            <li class="project-item">
+                            <div class="project-title">SRM ACM SIGAPP</div>
+                            <div class="project-description">ACM-SIGAPP is a community-oriented platform created to support the activities of the ACM Special Interest Group on Applied Computing. The project aims to connect researchers, students, and professionals by providing a space to share resources, showcase applied computing work, and stay informed about events, publications, and opportunities. It’s designed to strengthen collaboration within the SIGAPP community, helping members explore emerging trends in applied computing while fostering networking and knowledge exchange.
+                                <a href="https://www.srmacmsigapp.xyz/" class="link" target="_blank">[WEBSITE]</a>
+                            </div>
+                            </li>
+                    </ul>
+                `
+            },
+            nonTechProjects: {
+                title: "NON-TECHNICAL PROJECTS",
+                content: `
+                    <ul class="project-list">
+                        <li class="project-item">
+                            <div class="project-title">Void - The World Of Helel</div>
+                            <div class="project-description">Helel (a.k.a. Lucifer) seeks penance for the sins he committed. So God, the Father, creates a new realm — Void. Helel’s task is to offer redemption to dying souls. If they can walk out of the door alive, they return to Earth. If not, they are cast into Hell. Two college boys, Alex and Dexter, find themselves trapped in Void. Their survival isn't just a test it’s judgment. Will they make it out?</div>
+                            <a href="https://www.youtube.com/watch?v=zy2P6IitxnM" class="link" target="_blank">[MOVIE]</a>
+                        </li>
+                        <li class="project-item">
+                            <div class="project-title">The Ark of Tomorrow</div>
+                            <div class="project-description">Modern adaptation of Noah's arc on flood.</div>
+                        </li>
+                        <li class="project-item">
+                            <div class="project-title">Azrael - Feared By Many Ordered By One</div>
+                            <div class="project-description">Azrael is a haunting psychological drama set on a twilight mountain top, where Vihan and Maya’s fragile bond unravels under the weight of addiction, memory, and fate. As blurred lines between reality and hallucination twist their choices, a dark presence looms forcing them to confront truth, betrayal, and the shadows they cannot escape.</div> 
+                            <a href="https://www.youtube.com/watch?v=RFrRDsbFHXM" class="link" target="_blank">[ANNOUNCEMENT]</a>
+                        </li>
+                    </ul>
+                `
+            }
+        };
+
+        // Initialize the application
+        function init() {
+            status.textContent = "AWAITING INPUT";
+            displayOutput(">> Do you want to enter (Y/N)?");
+            commandInput.focus();
+            
+            // Add floating effect to ID card
+            let floatOffset = 0;
+            setInterval(() => {
+                floatOffset += 0.05;
+                const floatY = Math.sin(floatOffset) * 3;
+                idCard.style.transform = `translateY(${floatY}px)`;
+            }, 50);
+        }
+
+        // Display output in the terminal
+        function displayOutput(text, className = "output-line") {
+            const outputLine = document.createElement('div');
+            outputLine.className = className;
+            outputLine.innerHTML = text;
+            outputArea.appendChild(outputLine);
+            outputArea.scrollTop = outputArea.scrollHeight;
+        }
+
+        // Handle user input
+        function handleInput() {
+            const input = commandInput.value.trim().toLowerCase();
+            commandInput.value = '';
+            
+            if (!state.authenticated) {
+                handleGateEntry(input);
+            } else {
+                handleMenuNavigation(input);
+            }
+        }
+
+        // Handle the initial gate entry
+        function handleGateEntry(input) {
+            if (input === 'y') {
+                state.authenticated = true;
+                status.textContent = "ACCESS GRANTED";
+                displayOutput("Y", "output-line command");
+                displayOutput("[ACCESS GRANTED]... Profile Decrypted.", "output-line success");
+                
+                // Transition to main menu after a brief delay
+                setTimeout(() => {
+                    displayMainMenu();
+                }, 1000);
+            } else if (input === 'n') {
+                displayOutput("N", "output-line command");
+                triggerErrorScreen();
+            } else {
+                displayOutput(input, "output-line command");
+                displayOutput("Invalid input. Please enter Y or N.", "output-line error");
+            }
+        }
+
+        // Display the main menu
+        function displayMainMenu() {
+            outputArea.innerHTML = '';
+            state.menuVisible = true;
+            
+            displayOutput("TERMINAL PORTFOLIO MENU", "output-line menu-title");
+            displayOutput("==========================================", "output-line menu-divider");
+            
+            const menuItems = [
+                "[1] About Me",
+                "[2] Technical Skills", 
+                "[3] Non-Technical Skills",
+                "[4] Technical Projects",
+                "[5] Non-Technical Projects",
+                "[6] Exit"
+            ];
+            
+            menuItems.forEach(item => {
+                displayOutput(item, "output-line menu-item");
+            });
+            
+            displayOutput("==========================================", "output-line menu-divider");
+            displayOutput("Enter a number (1-6) to navigate:", "output-line menu-prompt");
+        }
+
+        // Handle menu navigation
+        function handleMenuNavigation(input) {
+            displayOutput(input, "output-line command");
+            
+            switch(input) {
+                case '1':
+                    displaySection('about');
+                    break;
+                case '2':
+                    displaySection('technical');
+                    break;
+                case '3':
+                    displaySection('nonTechnical');
+                    break;
+                case '4':
+                    displaySection('techProjects');
+                    break;
+                case '5':
+                    displaySection('nonTechProjects');
+                    break;
+                case '6':
+                case 'exit':
+                    clearSection();
+                    break;
+                default:
+                    displayOutput("Invalid option. Please enter a number between 1-6.", "output-line error");
+            }
+        }
+
+        // Display a content section
+        function displaySection(sectionKey) {
+            // Clear previous section if any
+            clearSection();
+            
+            state.currentSection = sectionKey;
+            const section = contentData[sectionKey];
+            
+            const sectionHTML = `
+                <div class="content-section">
+                    <h3 class="section-title">${section.title}</h3>
+                    <div class="section-content">${section.content}</div>
+                </div>
+            `;
+            
+            displayOutput(sectionHTML, "output-line section");
+        }
+
+        // Clear the current section
+        function clearSection() {
+            state.currentSection = null;
+            
+            // Remove all section elements
+            const sections = outputArea.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.remove();
+            });
+            
+            // If we're clearing via the exit command, show a message
+            if (commandInput.value.toLowerCase() === '6' || commandInput.value.toLowerCase() === 'exit') {
+                displayOutput("Terminal cleared. Menu remains active.", "output-line info");
+            }
+        }
+
+        // Trigger the error screen
+        function triggerErrorScreen() {
+            let flickerCount = 0;
+            const maxFlickers = 10;
+            
+            const flickerInterval = setInterval(() => {
+                errorScreen.style.opacity = Math.random() > 0.5 ? '0.8' : '0.3';
+                flickerCount++;
+                
+                if (flickerCount >= maxFlickers) {
+                    clearInterval(flickerInterval);
+                    errorScreen.style.opacity = '1';
+                    terminalBody.style.display = 'none';
+                    status.textContent = "ACCESS DENIED";
+                    
+                    // Disable input
+                    commandInput.disabled = true;
+                }
+            }, 100);
+        }
+
+        // Event Listeners
+        commandInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                handleInput();
+            }
+        });
+
+        // Ensure the input stays focused when clicking in the terminal
+        terminalBody.addEventListener('click', function() {
+            commandInput.focus();
+        });
+
+        // Initialize the application when the page loads
+        window.onload = init;
+    </script>
 </body>
 </html>
